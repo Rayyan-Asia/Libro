@@ -22,11 +22,11 @@ namespace Domain
         [MaxLength(500)]
         public string Description { get; set; }
 
-        public  List<Book> AuthoredBooks;
+        public  List<Book> Books;
 
         public Author()
         {
-            AuthoredBooks = new List<Book>();
+            Books = new List<Book>();
         }
     }
 }

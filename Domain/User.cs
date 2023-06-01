@@ -9,22 +9,28 @@ namespace Domain
 {
     public class User
     {
+        [Required]
         public int Id { get; set; }
+
         [Required]
         [MaxLength(32)]
         public string Name { get; set; }
+
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public Role Role { get; set; }
 
         [Required]
-        public Role Role { get; set; }
+        public string Salt { get; set; }
+
+        [Required]
+        public string HashedPassword { get; set; }
     }
 }
