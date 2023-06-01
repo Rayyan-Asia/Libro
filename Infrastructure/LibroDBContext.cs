@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Domain;
+﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Libro.Infrastructure
@@ -29,5 +29,13 @@ namespace Libro.Infrastructure
                 .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
                 .EnableSensitiveDataLogging();
         }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ModelManager modelManager = new ModelManager(modelBuilder);
+            modelManager.ConfigureEntityProperties();
+        }
+
     }
 }
