@@ -21,5 +21,7 @@ namespace Domain
         [Required]
         public DateTime DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }
+
+        public bool isExcused { get; set; } = false;
     }
 }

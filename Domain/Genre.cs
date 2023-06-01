@@ -15,5 +15,6 @@ namespace Domain
         [MaxLength(32)]
         public string Type { get; set; }
 
+        public List<Genre> Books { get; set; }
     }
 }

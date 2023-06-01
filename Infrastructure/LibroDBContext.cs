@@ -35,6 +35,7 @@ namespace Libro.Infrastructure
         {
             ModelManager modelManager = new ModelManager(modelBuilder);
             modelManager.ConfigureEntityProperties();
+            modelManager.SeedData();
         }
 
     }
