@@ -1,4 +1,6 @@
-namespace Libro
+using Libro.Infrastructure;
+
+namespace Presentation
 {
     public class Program
     {
@@ -12,6 +14,7 @@ namespace Libro
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<LibroDbContext>();
 
             var app = builder.Build();
 

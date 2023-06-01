@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    public enum Genre
+    public class Genre
     {
-        Comedy,
-        Horror,
-        SciFi,
-        History,
-        Sports,
-        Technology,
-        Romance,
-        Fiction,
-        NonFiction,
+        public int Id { get; set; }
+        public string Type { get; set; }
+
     }
 }
