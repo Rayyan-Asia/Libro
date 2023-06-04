@@ -22,7 +22,11 @@ namespace Libro.Infrastructure
             ConfigureBookProperties();
             ConfigureReservationProperties();
             ConfigureLoanProperties();
+            ConfigureBookAuthorProperties();
+            ConfigureBookGenreProperties();
+            ConfigureManytoManyRelationships();
         }
+
 
         public void SeedData()
         {
@@ -32,6 +36,8 @@ namespace Libro.Infrastructure
             SeedBook();
             SeedReservation();
             SeedLoan();
+            SeedBookAuthor();
+            SeedBookGenre();
         }
 
         private void ConfigureUserProperties()
@@ -55,8 +61,7 @@ namespace Libro.Infrastructure
         {
             _modelBuilder.Entity<Book>().Property<string>(d => d.Description).HasMaxLength(500);
             _modelBuilder.Entity<Book>().Property<string>(d => d.Title).HasMaxLength(100).IsRequired();
-            _modelBuilder.Entity<Book>().Property<bool>(d => d.IsReserved).HasDefaultValue(false);
-            _modelBuilder.Entity<Book>().Property<int>(d => d.AuthorId).IsRequired();
+            _modelBuilder.Entity<Book>().Property<bool>(d => d.IsAvailable).HasDefaultValue(false);
         }
 
         private void ConfigureReservationProperties()
@@ -74,6 +79,61 @@ namespace Libro.Infrastructure
             _modelBuilder.Entity<Loan>().Property<DateTime>(d => d.DueDate).HasColumnType("Date").IsRequired();
             _modelBuilder.Entity<Loan>().Property<DateTime?>(d => d.ReturnDate).HasColumnType("Date");
         }
+
+        private void ConfigureBookAuthorProperties()
+        {
+            _modelBuilder.Entity<BookAuthor>().HasKey(ec => ec.BookId);
+            _modelBuilder.Entity<BookAuthor>().HasKey(ec => ec.AuthorId);
+        }
+
+        private void ConfigureBookGenreProperties()
+        {
+            _modelBuilder.Entity<BookGenre>().HasKey(ec => ec.BookId);
+            _modelBuilder.Entity<BookGenre>().HasKey(ec => ec.GenreId);
+        }
+        public void ConfigureManytoManyRelationships()
+        {
+
+            _modelBuilder.Entity<Book>()
+                        .HasMany(b => b.Authors)
+                        .WithMany(b => b.Books)
+                        .UsingEntity<BookAuthor>
+                        (
+                            ba => ba.HasOne(b => b.Author)
+                            .WithMany()
+                            .HasForeignKey(b => b.AuthorId),
+
+                            ba => ba.HasOne(b => b.Book)
+                                 .WithMany()
+                                 .HasForeignKey(b => b.BookId),
+                            ba =>
+                            {
+                                ba.ToTable("BookAuthor");
+                                ba.HasKey(b => new { b.BookId, b.AuthorId });
+                            }
+                        );
+
+            _modelBuilder.Entity<Book>()
+                        .HasMany(b => b.Genres)
+                        .WithMany(b => b.Books)
+                        .UsingEntity<BookGenre>
+                        (
+                            ba => ba.HasOne(b => b.Genre)
+                            .WithMany()
+                            .HasForeignKey(b => b.GenreId),
+
+                            ba => ba.HasOne(b => b.Book)
+                                 .WithMany()
+                                 .HasForeignKey(b => b.BookId),
+                            ba =>
+                            {
+                                ba.ToTable("BookGenre");
+                                ba.HasKey(b => new { b.BookId, b.GenreId });
+                            }
+                        );
+
+        }
+
         private void SeedUser()
         {
             List<string> passwords = new List<string>()
@@ -203,21 +263,18 @@ namespace Libro.Infrastructure
                     Id = 1,
                     Title = "Men In The Sun",
                     Description = "Men seek refuge to find a better living.",
-                    AuthorId = 2,
                 },
                 new Book()
                 {
                     Id = 2,
                     Title = "Harry Potter",
                     Description = "Young boy discovers he has mysterious powers, changes his whole life to explore its potential",
-                    AuthorId = 1,
                 },
                 new Book()
                 {
                     Id = 3,
                     Title = "If I Were Another",
                     Description = "Compilation of Mahmoud Darwish's top notch poetry",
-                    AuthorId = 3,
                 },
             };
 
@@ -229,7 +286,7 @@ namespace Libro.Infrastructure
             List<Reservation> reservations = new List<Reservation>()
             {
                 new Reservation() {
-                    Id = 1, 
+                    Id = 1,
                     UserId = 1,
                     BookId = 1,
                     ReservationDate = DateTime.Parse("2023-4-10"),
@@ -297,11 +354,80 @@ namespace Libro.Infrastructure
                     LoanDate = DateTime.Parse("2023-4-12"),
                     DueDate = DateTime.Parse("2023-4-26"),
                 },
-
-
             };
 
             _modelBuilder.Entity<Loan>().HasData(loans);
+        }
+
+        private void SeedBookAuthor()
+        {
+            List<BookAuthor> bookAuthors = new List<BookAuthor>()
+             {
+                 new BookAuthor
+                 {
+                     BookId = 1,
+                     AuthorId = 2,
+                 },
+                 new BookAuthor
+                 {
+                     BookId = 2,
+                     AuthorId = 1,
+                 },
+                 new BookAuthor
+                 {
+                     BookId = 3,
+                     AuthorId = 3,
+                 },
+             };
+            _modelBuilder.Entity<BookAuthor>().HasData(bookAuthors);
+        }
+        private void SeedBookGenre()
+        {
+            List<BookGenre> bookGenres = new List<BookGenre>()
+            {
+                new BookGenre
+                {
+                    BookId = 1,
+                    GenreId = 1
+                },
+                new BookGenre
+                {
+                    BookId = 1,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 2,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 2,
+                    GenreId = 4
+                },
+                new BookGenre
+                {
+                    BookId = 2,
+                    GenreId = 5
+                },
+                new BookGenre
+                {
+                    BookId = 2,
+                    GenreId = 6
+                },
+                new BookGenre
+                {
+                    BookId = 3,
+                    GenreId = 1
+                },
+                new BookGenre
+                {
+                    BookId = 3,
+                    GenreId = 2
+                }
+            };
+
+            _modelBuilder.Entity<BookGenre>().HasData(bookGenres);
         }
 
     }

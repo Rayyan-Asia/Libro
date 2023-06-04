@@ -16,10 +16,14 @@ namespace Domain
         public string Description { get; set; }
 
         public List<Genre> Genres { get; set; }
-        public bool IsReserved { get; set; }
 
-        [Required]
-        public int AuthorId { get; set; }
-        public Author Author { get; set; }
+        public List<Author> Authors{ get; set; }
+        public bool IsAvailable { get; set; }
+
+        public Book()
+        {
+            Authors = new List<Author>();
+            Genres = new List<Genre>();
+        }
     }
 }
