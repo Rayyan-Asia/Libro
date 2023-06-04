@@ -33,7 +33,7 @@ namespace Infrastructure
             return salt;
         }
 
-        public static bool VerifyPassword(string password, string salt, int iteration, string passwordToCompare)
+        public static bool VerifyPassword(string password, string salt, string passwordToCompare, int iteration = 4 )
         {
             string generatedPassword = ComputeHash(password, salt, iteration);
             return generatedPassword.Equals(passwordToCompare);

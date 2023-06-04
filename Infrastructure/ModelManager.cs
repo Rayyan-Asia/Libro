@@ -46,6 +46,7 @@ namespace Libro.Infrastructure
             _modelBuilder.Entity<User>().Property<string>(d => d.Name).HasMaxLength(32).IsRequired();
             _modelBuilder.Entity<User>().Property(d => d.PhoneNumber).HasMaxLength(16).IsRequired();
             _modelBuilder.Entity<User>().Property(d => d.Email).HasMaxLength(100).IsRequired();
+            _modelBuilder.Entity<User>().HasIndex(d => d.Email).IsUnique();
         }
         private void ConfigureAuthorProperties()
         {
