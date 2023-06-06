@@ -1,8 +1,10 @@
-﻿using Application.Interfaces;
-using Domain;
+﻿using System.Reflection.Metadata.Ecma335;
+using Application.DTOs;
+using Application.Users.Commands;
+using Application.Users.Queries;
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Presentation.DTOs;
 using Presentation.Validators;
 
 namespace Presentation.Controllers
@@ -12,59 +14,50 @@ namespace Presentation.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private readonly IUserService _userService;
-        private readonly UserValidator _validator;
+        private readonly IMediator _mediator;
 
-        public UserController(IUserService userService, UserValidator userValidator)
+        public UserController(IMediator mediator)
         {
-            _userService = userService;
-            _validator = userValidator;
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterCommand userForRegistry)
         {
-            // use automapper
-            // use fluent validations
-            var user = new User
-            {
-                Email = registerDto.Email,
-                Name = registerDto.Name,
-                PhoneNumber = registerDto.PhoneNumber,
-                Role = registerDto.Role,
-            };
-
-            var validationResult = _validator.Validate(user);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
-
-            // Register the user
-            var registeredUser = await _userService.RegisterUser(user, registerDto.Password);
-            if (registeredUser == null)
-            {
+            if (userForRegistry == null || !ModelState.IsValid)
                 return BadRequest();
-            }
 
-           // return jwt token
-            return Ok();
+            var result = await _mediator.Send(userForRegistry);
+
+            if(result.Item1 == null)
+                return BadRequest("Email already exists");
+
+            var response = new AuthenticationResponse() { User = result.Item1, Jwt = result.Item2 };
+
+            return Ok(response);
+
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginQuery loginQuery)
         {
-            if(! await _userService.UserExists(loginDto.Email))
-                return BadRequest("User does not exist");
-            // Perform user login
-            var user = await _userService.Login(loginDto.Email, loginDto.Password);
+            if(loginQuery == null || !ModelState.IsValid)
+                return BadRequest();
 
-            if (user == null)
-            {
-                return BadRequest("Bad password");
-            }
+            var result = await _mediator.Send(loginQuery);
 
-            // return jwt token \
-            return Ok();
+            var response = new AuthenticationResponse() { User = result.Item1, Jwt = result.Item2 };
+
+            return result.Item1 != null ? Ok(response) : BadRequest("Does not exist");
         }
+
+        public class AuthenticationResponse
+        {
+            public UserDto User { get; set; }
+            public string Jwt { get; set; }
+        }
+
+
     }
 
 }

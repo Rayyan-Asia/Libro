@@ -4,12 +4,12 @@ namespace Infrastructure.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> AddUser(User user);
-        Task<bool> DeleteUser(User user);
-        Task<IEnumerable<User>> GetAllUsers();
-        Task<User?> GetUserByEmail(string email);
-        Task<User?> GetUserById(int userId);
-        Task<User> UpdateUser(User user);
-        Task<bool> UserExists(User user);
+        Task<User> AddUserAsync(User user);
+        Task<bool> DeleteUserAsync(User user);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User?> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByIdAsync(int userId);
+        Task<User> UpdateUserAsync(User user);
+        Task<bool> UserExistsAsync(User user);
     }
 }

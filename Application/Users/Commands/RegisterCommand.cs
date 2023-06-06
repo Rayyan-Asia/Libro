@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain;
+using MediatR;
+using Application.DTOs;
 
-namespace Domain
+namespace Application.Users.Commands
 {
-    public class User
+    public class RegisterCommand : IRequest<(UserDto,string)>
     {
-        [Required]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(32)]
         public string Name { get; set; }
@@ -26,12 +25,6 @@ namespace Domain
         public string Email { get; set; }
 
         [Required]
-        public Role Role { get; set; }
-
-        [Required]
-        public string Salt { get; set; }
-
-        [Required]
-        public string HashedPassword { get; set; }
+        public string Password { get; set; }
     }
 }
