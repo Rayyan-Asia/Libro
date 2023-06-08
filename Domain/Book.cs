@@ -14,11 +14,12 @@ namespace Domain
 
         [MaxLength(500)]
         public string Description { get; set; }
-
         public List<Genre> Genres { get; set; }
 
+        [Required]
+        public DateTime PublicationDate { get; set; }
         public List<Author> Authors{ get; set; }
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; } = true;
 
         public Book()
         {

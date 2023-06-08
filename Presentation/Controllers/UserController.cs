@@ -16,11 +16,11 @@ namespace Presentation.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
         private readonly IMediator _mediator;
 
-        public UserController(IMediator mediator)
+        public UsersController(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }

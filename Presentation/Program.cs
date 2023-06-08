@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using Application.Profiles;
 using FluentValidation;
 using Infrastructure.Interfaces;
@@ -18,23 +19,29 @@ namespace Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            
+
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
 
             builder.Services.AddDbContext<LibroDbContext>(DbContextOptions => DbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:LibroDbConnectionString"]));
 
             builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<UserValidator>();
 
+            builder.Services.AddControllers(options =>
+            {
+                options.ReturnHttpNotAcceptable = true;
+            }).AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             builder.Services.AddAutoMapper(
                 typeof(Program).GetTypeInfo().Assembly,
-                typeof(UserProfile).GetTypeInfo().Assembly);
+                typeof(UserProfile).GetTypeInfo().Assembly,
+                typeof(BookProfile).GetTypeInfo().Assembly);
             builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 
@@ -82,7 +89,6 @@ namespace Presentation
             });
 
             var app = builder.Build();
-.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
