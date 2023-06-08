@@ -7,7 +7,7 @@ using Application.DTOs;
 using Microsoft.Extensions.Configuration;
 namespace Application.Users.Handlers
 {
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, (UserDto,string)>
+    public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthenticationResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -19,18 +19,22 @@ namespace Application.Users.Handlers
             _mapper = mapper;
             _configuration = configuration;
         }
-        public async Task<(UserDto,string)> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<AuthenticationResponse> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(request.Email);
             if (user == null)
             {
-                return (null,null);
+                return null;
             }
             var isVerified = PasswordHasher.VerifyPassword(request.Password, user.Salt, user.HashedPassword);
             var jwt = TokenHandler.GenerateJwt(user, _configuration);
+            
             if (isVerified)
-                return (_mapper.Map<UserDto>(user), jwt);
-            return (null, null);
+            {
+                var userDto = _mapper.Map<UserDto>(user);
+                return new AuthenticationResponse() { UserDto = userDto , Jwt = jwt};
+            }
+            return null;
         }
 
         

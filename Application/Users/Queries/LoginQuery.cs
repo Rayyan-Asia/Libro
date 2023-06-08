@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Application.Users.Queries
 {
-    public class LoginQuery : IRequest<(UserDto,string)>
+    public class LoginQuery : IRequest<AuthenticationResponse>
     {
         [Required]
         [EmailAddress]

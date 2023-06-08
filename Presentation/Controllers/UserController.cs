@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using Application.DTOs;
+using Application.Users;
 using Application.Users.Commands;
 using Application.Users.Queries;
 using AutoMapper;
@@ -29,12 +30,10 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(userForRegistry);
 
-            if(result.Item1 == null)
+            if(result == null)
                 return BadRequest("Email already exists");
 
-            var response = new AuthenticationResponse() { User = result.Item1, Jwt = result.Item2 };
-
-            return Ok(response);
+            return Ok(result);
 
         }
 
@@ -46,17 +45,11 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(loginQuery);
 
-            var response = new AuthenticationResponse() { User = result.Item1, Jwt = result.Item2 };
 
-            return result.Item1 != null ? Ok(response) : BadRequest("Does not exist");
+            return result != null ? Ok(result) : BadRequest("Does not exist");
         }
 
-        public class AuthenticationResponse
-        {
-            public UserDto User { get; set; }
-            public string Jwt { get; set; }
-        }
-
+        
 
     }
 

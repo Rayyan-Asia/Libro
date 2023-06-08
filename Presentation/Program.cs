@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using Application.DTOs;
+using Application.Users;
 using Application.Users.Commands;
 using Application.Users.Handlers;
 using Application.Users.Queries;
@@ -37,8 +38,8 @@ namespace Presentation
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserValidator>();
-            builder.Services.AddScoped<IRequestHandler<LoginQuery, (UserDto,string)>, LoginQueryHandler>();
-            builder.Services.AddScoped<IRequestHandler<RegisterCommand, (UserDto, string)>, RegisterCommandHandler>();
+            builder.Services.AddScoped<IRequestHandler<LoginQuery, AuthenticationResponse>, LoginQueryHandler>();
+            builder.Services.AddScoped<IRequestHandler<RegisterCommand, AuthenticationResponse>, RegisterCommandHandler>();
 
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -10,7 +10,7 @@ using Application.DTOs;
 
 namespace Application.Users.Commands
 {
-    public class RegisterCommand : IRequest<(UserDto,string)>
+    public class RegisterCommand : IRequest<AuthenticationResponse>
     {
         [Required]
         [MaxLength(32)]
