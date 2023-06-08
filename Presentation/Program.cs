@@ -48,9 +48,10 @@ namespace Presentation
             });
 
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication("Bearer")
               .AddJwtBearer(options =>
               {
+                  
                   options.IncludeErrorDetails = true;
 
                   options.TokenValidationParameters = new TokenValidationParameters
