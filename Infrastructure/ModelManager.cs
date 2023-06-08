@@ -63,6 +63,8 @@ namespace Libro.Infrastructure
             _modelBuilder.Entity<Book>().Property<string>(d => d.Description).HasMaxLength(500);
             _modelBuilder.Entity<Book>().Property<string>(d => d.Title).HasMaxLength(100).IsRequired();
             _modelBuilder.Entity<Book>().Property<bool>(d => d.IsAvailable).HasDefaultValue(false);
+            _modelBuilder.Entity<Book>().Property<DateTime>(d => d.PublicationDate).HasColumnType("Date").IsRequired();
+
         }
 
         private void ConfigureReservationProperties()
@@ -264,18 +266,21 @@ namespace Libro.Infrastructure
                     Id = 1,
                     Title = "Men In The Sun",
                     Description = "Men seek refuge to find a better living.",
+                    PublicationDate = DateTime.Parse("1999-1-1"),
                 },
                 new Book()
                 {
                     Id = 2,
                     Title = "Harry Potter",
                     Description = "Young boy discovers he has mysterious powers, changes his whole life to explore its potential",
+                    PublicationDate = DateTime.Parse("2001-2-2"),
                 },
                 new Book()
                 {
                     Id = 3,
                     Title = "If I Were Another",
                     Description = "Compilation of Mahmoud Darwish's top notch poetry",
+                    PublicationDate = DateTime.Parse("1990-1-1"),
                 },
             };
 
