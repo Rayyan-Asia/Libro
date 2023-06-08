@@ -27,7 +27,7 @@ namespace Application.Users.Handlers
                 return null;
             }
             var isVerified = PasswordHasher.VerifyPassword(request.Password, user.Salt, user.HashedPassword);
-            var jwt = TokenHandler.GenerateJwt(user, _configuration);
+            var jwt = JwtService.GenerateJwt(user, _configuration);
             
             if (isVerified)
             {

@@ -1,10 +1,13 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using Application;
 using Application.DTOs;
 using Application.Users;
 using Application.Users.Commands;
 using Application.Users.Queries;
 using AutoMapper;
+using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Validators;
 
@@ -30,7 +33,7 @@ namespace Presentation.Controllers
 
             var result = await _mediator.Send(userForRegistry);
 
-            if(result == null)
+            if (result == null)
                 return BadRequest("Email already exists");
 
             return Ok(result);
@@ -40,7 +43,7 @@ namespace Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginQuery loginQuery)
         {
-            if(loginQuery == null || !ModelState.IsValid)
+            if (loginQuery == null || !ModelState.IsValid)
                 return BadRequest();
 
             var result = await _mediator.Send(loginQuery);
@@ -49,6 +52,33 @@ namespace Presentation.Controllers
             return result != null ? Ok(result) : BadRequest("Does not exist");
         }
 
+        [HttpPost("role")]
+        [Authorize(Policy = "AdministratorRequired")]
+        public async Task<IActionResult> ModifyRole([FromBody] ModifyRoleCommand modifyRoleCommand)
+        {
+            if (modifyRoleCommand == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+            {
+                if (authorizationHeader.Count > 0)
+                {
+                    var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
+                    var user = JwtService.GetUserFromPayload(token);
+                    if (user?.Role == Role.Administrator && user.Id != modifyRoleCommand.UserId)
+                    {
+                        var result = await _mediator.Send(modifyRoleCommand);
+                        if (result == null) return BadRequest();
+                        return Ok(result);
+                    }
+                    
+                }
+            }
+
+            // Handle unauthorized access
+            return Unauthorized();
+        }
         
 
     }

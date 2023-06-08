@@ -1,6 +1,7 @@
 ﻿namespace Application
 {
     using System;
+    using System.Data;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
@@ -8,31 +9,31 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
 
-    public static class TokenHandler
+    public static class JwtService
     {
         public static User? GetUserFromPayload(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            
             var jwtSecurityToken = tokenHandler.ReadJwtToken(jwtToken);
+
             int userId = 0;
-            try
+            var userIdClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId))
             {
-               userId = int.Parse(jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "userId").Value);
+                userId = parsedUserId;
             }
-            catch (Exception ex) {
-               
-            }
-              
-            var roleString = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "role").Value;
-            if (roleString == null)
+
+            var roleString = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(roleString))
             {
                 return null;
             }
 
-            Role role = (Role)Enum.Parse(typeof(Role), roleString);
-            if (userId != 0 && role != null)
-                return new User {Id = userId, Role = role};
+            if (Enum.TryParse<Role>(roleString, out var role) && userId != 0)
+            {
+                return new User { Id = userId, Role = role };
+            }
+
             return null;
         }
 
@@ -43,8 +44,8 @@
 
             var claims = new List<Claim>
             {
-                new Claim("userId", user.Id.ToString()),
-                new Claim("role", user.Role.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var jwtSecurityToken = new JwtSecurityToken(

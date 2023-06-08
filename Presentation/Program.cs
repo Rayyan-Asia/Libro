@@ -1,17 +1,11 @@
-using System.Security.Claims;
+using System.Reflection;
 using System.Text;
-using Application.DTOs;
-using Application.Users;
-using Application.Users.Commands;
-using Application.Users.Handlers;
-using Application.Users.Queries;
+using Application.Profiles;
 using FluentValidation;
 using Infrastructure.Interfaces;
 using Infrastructure.Repositories;
 using Libro.Infrastructure;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Validators;
@@ -38,20 +32,25 @@ namespace Presentation
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserValidator>();
+            /*
             builder.Services.AddScoped<IRequestHandler<LoginQuery, AuthenticationResponse>, LoginQueryHandler>();
             builder.Services.AddScoped<IRequestHandler<RegisterCommand, AuthenticationResponse>, RegisterCommandHandler>();
+            builder.Services.AddScoped<IRequestHandler<ModifyRoleCommand, UserDto>, ModifyRoleCommandHandler>();
+            */
 
 
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            builder.Services.AddMediatR(cfg => {
-                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-            });
+            builder.Services.AddAutoMapper(
+
+                typeof(Program).GetTypeInfo().Assembly,
+                typeof(UserProfile).GetTypeInfo().Assembly
+                );
+            builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 
             builder.Services.AddAuthentication("Bearer")
               .AddJwtBearer(options =>
               {
-                  
+
                   options.IncludeErrorDetails = true;
 
                   options.TokenValidationParameters = new TokenValidationParameters
@@ -67,9 +66,9 @@ namespace Presentation
                   };
               });
 
-            
 
-            builder.Services.AddMvc(); 
+
+            builder.Services.AddMvc();
 
             builder.Services.AddAuthorization(options =>
             {

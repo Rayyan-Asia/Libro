@@ -39,7 +39,7 @@ namespace Application.Users.Handlers
             var registeredUser = await _userRepository.AddUserAsync(newUser);
 
             var registeredUserDto = _mapper.Map<UserDto>(registeredUser);
-            var jwt = TokenHandler.GenerateJwt(registeredUser, _configuration);
+            var jwt = JwtService.GenerateJwt(registeredUser, _configuration);
 
             return new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto};
         }

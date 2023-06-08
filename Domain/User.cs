@@ -26,7 +26,7 @@ namespace Domain
         public string Email { get; set; }
 
         [Required]
-        public Role Role { get; set; }
+        public Role Role { get; set; } = Role.Patron;
 
         [Required]
         public string Salt { get; set; }
