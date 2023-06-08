@@ -37,7 +37,6 @@ namespace Presentation.Controllers
                 return BadRequest("Email already exists");
 
             return Ok(result);
-
         }
 
         [HttpPost("login")]
@@ -72,15 +71,10 @@ namespace Presentation.Controllers
                         if (result == null) return BadRequest();
                         return Ok(result);
                     }
-                    
                 }
             }
-
-            // Handle unauthorized access
             return Unauthorized();
         }
-        
-
     }
 
 }

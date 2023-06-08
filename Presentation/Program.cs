@@ -18,10 +18,9 @@ namespace Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -32,25 +31,16 @@ namespace Presentation
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserValidator>();
-            /*
-            builder.Services.AddScoped<IRequestHandler<LoginQuery, AuthenticationResponse>, LoginQueryHandler>();
-            builder.Services.AddScoped<IRequestHandler<RegisterCommand, AuthenticationResponse>, RegisterCommandHandler>();
-            builder.Services.AddScoped<IRequestHandler<ModifyRoleCommand, UserDto>, ModifyRoleCommandHandler>();
-            */
-
 
             builder.Services.AddAutoMapper(
-
                 typeof(Program).GetTypeInfo().Assembly,
-                typeof(UserProfile).GetTypeInfo().Assembly
-                );
+                typeof(UserProfile).GetTypeInfo().Assembly);
             builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 
             builder.Services.AddAuthentication("Bearer")
               .AddJwtBearer(options =>
               {
-
                   options.IncludeErrorDetails = true;
 
                   options.TokenValidationParameters = new TokenValidationParameters
@@ -92,8 +82,7 @@ namespace Presentation
             });
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
+.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
