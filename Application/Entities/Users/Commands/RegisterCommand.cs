@@ -8,7 +8,7 @@ using Domain;
 using MediatR;
 using Application.DTOs;
 
-namespace Application.Users.Commands
+namespace Application.Entities.Users.Commands
 {
     public class RegisterCommand : IRequest<AuthenticationResponse>
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
 
-namespace Application.Users.Queries
+namespace Application.Entities.Users.Queries
 {
     public class LoginQuery : IRequest<AuthenticationResponse>
     {

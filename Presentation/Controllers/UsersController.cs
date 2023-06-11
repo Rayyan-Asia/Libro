@@ -1,9 +1,8 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using Application;
 using Application.DTOs;
-using Application.Users;
-using Application.Users.Commands;
-using Application.Users.Queries;
+using Application.Entities.Users.Commands;
+using Application.Entities.Users.Queries;
 using AutoMapper;
 using Domain;
 using MediatR;

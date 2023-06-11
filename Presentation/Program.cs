@@ -31,13 +31,14 @@ namespace Presentation
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
             builder.Services.AddScoped<UserValidator>();
 
             builder.Services.AddControllers(options =>
             {
                 options.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             builder.Services.AddAutoMapper(
                 typeof(Program).GetTypeInfo().Assembly,
                 typeof(UserProfile).GetTypeInfo().Assembly,

@@ -119,6 +119,11 @@ namespace Infrastructure.Repositories
             return (metadata, filteredBooks);
         }
 
+        public async Task<Book?> GetBookById(int bookId)
+        {
+            return await _context.Books.SingleOrDefaultAsync(b => b.Id == bookId);
+        }
+
 
     }
 }

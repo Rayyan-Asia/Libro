@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Books.Queries;
 using Application.DTOs;
+using Application.Entities.Books.Queries;
 using AutoMapper;
 using Infrastructure;
 using Infrastructure.Interfaces;
 using MediatR;
 
-namespace Application.Books.Handlers
+namespace Application.Entities.Books.Handlers
 {
     public class SearchQueryHandler : IRequestHandler<SearchQuery, (PaginationMetadata, List<BookDto>)>
     {
@@ -25,7 +25,7 @@ namespace Application.Books.Handlers
 
         public async Task<(PaginationMetadata, List<BookDto>)> Handle(SearchQuery request, CancellationToken cancellationToken)
         {
-            var (paginationMetadata, books) = await _repository.SearchBooksAsync(request.Title,request.Author,request.Genre,request.pageNumber, request.pageSize);
+            var (paginationMetadata, books) = await _repository.SearchBooksAsync(request.Title, request.Author, request.Genre, request.pageNumber, request.pageSize);
             var dtoList = _mapper.Map<List<BookDto>>(books);
             return (paginationMetadata, dtoList);
         }

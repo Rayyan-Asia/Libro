@@ -7,7 +7,7 @@ using Application.DTOs;
 using Domain;
 using MediatR;
 
-namespace Application.Users.Commands
+namespace Application.Entities.Users.Commands
 {
     public class ModifyRoleCommand : IRequest<UserDto>
     {

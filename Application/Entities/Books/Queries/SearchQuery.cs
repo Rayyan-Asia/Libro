@@ -8,13 +8,13 @@ using Application.DTOs;
 using Infrastructure;
 using MediatR;
 
-namespace Application.Books.Queries
+namespace Application.Entities.Books.Queries
 {
     public class SearchQuery : IRequest<(PaginationMetadata, List<BookDto>)>
     {
-        public string? Title { get; set; }
-        public string? Author { get; set; }
-        public string? Genre { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public string Genre { get; set; }
 
         [Range(0, 5)]
         public int pageSize { get; set; } = 5;

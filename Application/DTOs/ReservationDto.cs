@@ -4,24 +4,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain;
 
-namespace Domain
+namespace Application.DTOs
 {
-    public class Reservation
+    public class ReservationDto
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
         public int UserId { get; set; }
-        public User? User { get; set; }
 
         [Required]
         public int BookId { get; set; }
-        public Book? Book { get; set; }
 
         [Required]
-        public DateTime ReservationDate { get; set; } = DateTime.Now;
-        public bool IsPendingApproval { get; set; } = true;
+        public DateTime ReservationDate { get; set; }
+
+        [Required]
+        public bool IsPendingApproval { get; set; }
     }
 }

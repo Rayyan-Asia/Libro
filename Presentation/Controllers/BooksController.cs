@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Application.Books.Queries;
+using Application.Entities.Books.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -8,7 +8,7 @@ using Application.DTOs;
 using Infrastructure;
 using MediatR;
 
-namespace Application.Books.Queries
+namespace Application.Entities.Books.Queries
 {
     public class BrowseBooksQuery : IRequest<(PaginationMetadata, List<BookDto>)>
     {

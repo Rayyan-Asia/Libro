@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 
-namespace Application.Users
+namespace Application.Entities.Users
 {
     public class AuthenticationResponse
     {

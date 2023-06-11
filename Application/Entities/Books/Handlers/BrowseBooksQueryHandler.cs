@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Books.Queries;
 using Application.DTOs;
+using Application.Entities.Books.Queries;
 using AutoMapper;
 using Infrastructure;
 using Infrastructure.Interfaces;
 using MediatR;
 
-namespace Application.Books.Handlers
+namespace Application.Entities.Books.Handlers
 {
     public class BrowseBooksQueryHandler : IRequestHandler<BrowseBooksQuery, (PaginationMetadata, List<BookDto>)>
     {

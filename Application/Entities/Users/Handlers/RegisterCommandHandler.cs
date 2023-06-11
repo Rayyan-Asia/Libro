@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
-using Application.Users.Commands;
+using Application.Entities.Users.Commands;
 using AutoMapper;
 using Domain;
 using Infrastructure;
@@ -12,7 +12,7 @@ using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 
-namespace Application.Users.Handlers
+namespace Application.Entities.Users.Handlers
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthenticationResponse>
     {
@@ -29,10 +29,11 @@ namespace Application.Users.Handlers
         public async Task<AuthenticationResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(request.Email);
-            if (user != null) {
+            if (user != null)
+            {
                 return null;
             }
-            var newUser = new User {  Email = request.Email , PhoneNumber = request.PhoneNumber, Name = request.Name};
+            var newUser = new User { Email = request.Email, PhoneNumber = request.PhoneNumber, Name = request.Name };
             newUser.Salt = PasswordHasher.GenerateSalt();
             newUser.HashedPassword = PasswordHasher.ComputeHash(request.Password, newUser.Salt);
 
@@ -41,7 +42,7 @@ namespace Application.Users.Handlers
             var registeredUserDto = _mapper.Map<UserDto>(registeredUser);
             var jwt = JwtService.GenerateJwt(registeredUser, _configuration);
 
-            return new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto};
+            return new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto };
         }
     }
 }
