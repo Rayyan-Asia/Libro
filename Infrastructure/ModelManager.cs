@@ -199,7 +199,7 @@ namespace Libro.Infrastructure
                 {
                     Id = 1,
                     Name = "J.K. Rowling",
-                    Description = "Known for her works on the harry potter series"
+                    Description = "Known for her works on the Harry Potter series"
                 },
                 new Author()
                 {
@@ -211,10 +211,51 @@ namespace Libro.Infrastructure
                 {
                     Id = 3,
                     Name = "Mahmoud Darwish",
-                    Description = "Known for his poetic works, debatabely one of the few authors that put Palestine on the map."
+                    Description = "Known for his poetic works, arguably one of the few authors that put Palestine on the map."
                 },
+                new Author()
+                {
+                    Id = 4,
+                    Name = "Jane Austen",
+                    Description = "Known for her classic novels like 'Pride and Prejudice' and 'Sense and Sensibility.'"
+                },
+                new Author()
+                {
+                    Id = 5,
+                    Name = "George Orwell",
+                    Description = "Known for his dystopian novel '1984' and the allegorical novella 'Animal Farm.'"
+                },
+                new Author()
+                {
+                    Id = 6,
+                    Name = "Ernest Hemingway",
+                    Description = "Known for his simple yet powerful writing style in works like 'The Old Man and the Sea' and 'A Farewell to Arms.'"
+                },
+                new Author()
+                {
+                    Id = 7,
+                    Name = "Agatha Christie",
+                    Description = "Known for her mystery novels featuring famous detectives like Hercule Poirot and Miss Marple."
+                },
+                new Author()
+                {
+                    Id = 8,
+                    Name = "William Shakespeare",
+                    Description = "Known for his plays like 'Romeo and Juliet,' 'Hamlet,' and 'Macbeth,' which are considered timeless classics."
+                },
+                new Author()
+                {
+                    Id = 9,
+                    Name = "Virginia Woolf",
+                    Description = "Known for her modernist novels like 'Mrs. Dalloway' and 'To the Lighthouse.'"
+                },
+                new Author()
+                {
+                    Id = 10,
+                    Name = "J.R.R. Tolkien",
+                    Description = "Known for his epic fantasy series 'The Lord of the Rings' and 'The Hobbit.'"
+                }
             };
-
             _modelBuilder.Entity<Author>().HasData(authors);
         }
 
@@ -224,34 +265,69 @@ namespace Libro.Infrastructure
             {
                 new Genre()
                 {
-                    Id= 1,
+                    Id = 1,
                     Type = "History"
                 },
                 new Genre()
                 {
-                    Id= 2,
+                    Id = 2,
                     Type = "Poetry"
                 },
                 new Genre()
                 {
-                    Id= 3,
+                    Id = 3,
                     Type = "Fiction"
                 },
                 new Genre()
                 {
-                    Id= 4,
+                    Id = 4,
                     Type = "Fairy Tale"
                 },
                 new Genre()
                 {
-                    Id= 5,
+                    Id = 5,
                     Type = "Comedy"
                 },
                 new Genre()
                 {
-                    Id= 6,
+                    Id = 6,
                     Type = "Adventure"
                 },
+                new Genre()
+                {
+                    Id = 7,
+                    Type = "Mystery"
+                },
+                new Genre()
+                {
+                    Id = 8,
+                    Type = "Science Fiction"
+                },
+                new Genre()
+                {
+                    Id = 9,
+                    Type = "Romance"
+                },
+                new Genre()
+                {
+                    Id = 10,
+                    Type = "Thriller"
+                },
+                new Genre()
+                {
+                    Id = 11,
+                    Type = "Biography"
+                },
+                new Genre()
+                {
+                    Id = 12,
+                    Type = "Fantasy"
+                },
+                new Genre()
+                {
+                    Id = 13,
+                    Type = "Historical Fiction"
+                }
             };
 
             _modelBuilder.Entity<Genre>().HasData(genres);
@@ -266,22 +342,71 @@ namespace Libro.Infrastructure
                     Id = 1,
                     Title = "Men In The Sun",
                     Description = "Men seek refuge to find a better living.",
-                    PublicationDate = DateTime.Parse("1999-1-1"),
+                    PublicationDate = DateTime.Parse("1999-01-01"),
                 },
                 new Book()
                 {
                     Id = 2,
                     Title = "Harry Potter",
                     Description = "Young boy discovers he has mysterious powers, changes his whole life to explore its potential",
-                    PublicationDate = DateTime.Parse("2001-2-2"),
+                    PublicationDate = DateTime.Parse("2001-02-02"),
                 },
                 new Book()
                 {
                     Id = 3,
                     Title = "If I Were Another",
-                    Description = "Compilation of Mahmoud Darwish's top notch poetry",
-                    PublicationDate = DateTime.Parse("1990-1-1"),
+                    Description = "Compilation of Mahmoud Darwish's top-notch poetry",
+                    PublicationDate = DateTime.Parse("1990-01-01"),
                 },
+                new Book()
+                {
+                    Id = 4,
+                    Title = "Pride and Prejudice",
+                    Description = "A classic romance novel set in 19th-century England.",
+                    PublicationDate = DateTime.Parse("1813-01-28"),
+                },
+                new Book()
+                {
+                    Id = 5,
+                    Title = "1984",
+                    Description = "A dystopian novel depicting a totalitarian regime and the struggle for individual freedom.",
+                    PublicationDate = DateTime.Parse("1949-06-08"),
+                },
+                new Book()
+                {
+                    Id = 6,
+                    Title = "The Old Man and the Sea",
+                    Description = "A novella about an old fisherman's battle with a giant marlin and his inner struggles.",
+                    PublicationDate = DateTime.Parse("1952-09-01"),
+                },
+                new Book()
+                {
+                    Id = 7,
+                    Title = "Murder on the Orient Express",
+                    Description = "A mystery novel featuring the detective Hercule Poirot, who investigates a murder on a luxurious train.",
+                    PublicationDate = DateTime.Parse("1934-01-01"),
+                },
+                new Book()
+                {
+                    Id = 8,
+                    Title = "Hamlet",
+                    Description = "A tragedy that follows the Prince of Denmark's quest for revenge after his father's murder.",
+                    PublicationDate = DateTime.Parse("1603-01-01"),
+                },
+                new Book()
+                {
+                    Id = 9,
+                    Title = "Mrs. Dalloway",
+                    Description = "A modernist novel that explores the thoughts and experiences of various characters during a single day in London.",
+                    PublicationDate = DateTime.Parse("1925-05-14"),
+                },
+                new Book()
+                {
+                    Id = 10,
+                    Title = "The Lord of the Rings",
+                    Description = "An epic fantasy trilogy set in the fictional world of Middle-earth, following a group of heroes on a quest to destroy a powerful ring.",
+                    PublicationDate = DateTime.Parse("1954-07-29"),
+                }
             };
 
             _modelBuilder.Entity<Book>().HasData(books);
@@ -368,23 +493,59 @@ namespace Libro.Infrastructure
         private void SeedBookAuthor()
         {
             List<BookAuthor> bookAuthors = new List<BookAuthor>()
-             {
-                 new BookAuthor
-                 {
-                     BookId = 1,
-                     AuthorId = 2,
-                 },
-                 new BookAuthor
-                 {
-                     BookId = 2,
-                     AuthorId = 1,
-                 },
-                 new BookAuthor
-                 {
-                     BookId = 3,
-                     AuthorId = 3,
-                 },
-             };
+            {
+                new BookAuthor
+                {
+                    BookId = 1,
+                    AuthorId = 2,
+                },
+                new BookAuthor
+                {
+                    BookId = 2,
+                    AuthorId = 1,
+                },
+                new BookAuthor
+                {
+                    BookId = 3,
+                    AuthorId = 3,
+                },
+                new BookAuthor
+                {
+                    BookId = 4,
+                    AuthorId = 4,
+                },
+                new BookAuthor
+                {
+                    BookId = 5,
+                    AuthorId = 5,
+                },
+                new BookAuthor
+                {
+                    BookId = 6,
+                    AuthorId = 6,
+                },
+                new BookAuthor
+                {
+                    BookId = 7,
+                    AuthorId = 7,
+                },
+                new BookAuthor
+                {
+                    BookId = 8,
+                    AuthorId = 8,
+                },
+                new BookAuthor
+                {
+                    BookId = 9,
+                    AuthorId = 9,
+                },
+                new BookAuthor
+                {
+                    BookId = 10,
+                    AuthorId = 10,
+                }
+            };
+
             _modelBuilder.Entity<BookAuthor>().HasData(bookAuthors);
         }
         private void SeedBookGenre()
@@ -430,6 +591,76 @@ namespace Libro.Infrastructure
                 {
                     BookId = 3,
                     GenreId = 2
+                },
+                new BookGenre
+                {
+                    BookId = 4,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 4,
+                    GenreId = 11
+                },
+                new BookGenre
+                {
+                    BookId = 5,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 5,
+                    GenreId = 8
+                },
+                new BookGenre
+                {
+                    BookId = 6,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 6,
+                    GenreId = 11
+                },
+                new BookGenre
+                {
+                    BookId = 7,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 7,
+                    GenreId = 7
+                },
+                new BookGenre
+                {
+                    BookId = 8,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 8,
+                    GenreId = 9
+                },
+                new BookGenre
+                {
+                    BookId = 9,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 9,
+                    GenreId = 12
+                },
+                new BookGenre
+                {
+                    BookId = 10,
+                    GenreId = 3
+                },
+                new BookGenre
+                {
+                    BookId = 10,
+                    GenreId = 12
                 }
             };
 
