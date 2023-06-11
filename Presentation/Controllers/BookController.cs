@@ -30,5 +30,19 @@ namespace Presentation.Controllers
             return Ok(books);
 
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromBody] SearchQuery searchQuery)
+        {
+            if (searchQuery == null) searchQuery = new SearchQuery();
+            var (pagination, books) = await _mediator.Send(searchQuery);
+            Response.Headers.Add("X-Pagination",
+               JsonSerializer.Serialize(pagination));
+
+            return Ok(books);
+
+        }
+
+
     }
 }
