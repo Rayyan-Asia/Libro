@@ -11,7 +11,8 @@ namespace Infrastructure.Interfaces
     {
         public Task<(PaginationMetadata, List<Book>)> GetBooksAsync(int pageNumber, int pageSize);
         public Task<(PaginationMetadata, List<Book>)> SearchBooksAsync(string? title, string? author, string? genre, int pageNumber, int pageSize);
-
-        public Task<Book?> GetBookById(int bookId);
+        public Task<Book?> GetBookByIdAsync(int bookId);
+        public Task<Book?> ReserveBookAsync(Book book);
+        public Task<Book?> ChangeBookAsAvailableAsync(Book book);
     }
 }

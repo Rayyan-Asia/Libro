@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Users.Commands;
 using AutoMapper;
-using Azure.Core;
 using Infrastructure.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Update;
-using Microsoft.Extensions.Configuration;
 
 namespace Application.Entities.Users.Handlers
 {

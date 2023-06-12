@@ -27,20 +27,17 @@ namespace Infrastructure.Repositories
                   IsAvailable = b.IsAvailable,
                   Description = b.Description,
                   PublicationDate = b.PublicationDate,
-                  // Include other scalar properties you need
 
                   Genres = b.Genres.Select(g => new Genre
                   {
                       Id = g.Id,
                       Type = g.Type
-                      // Include other scalar properties you need from Genre
                   }).ToList(),
 
                   Authors = b.Authors.Select(a => new Author
                   {
                       Id = a.Id,
                       Name = a.Name
-                      // Include other scalar properties you need from Author
                   }).ToList()
               })
               .ToListAsync();
@@ -97,14 +94,12 @@ namespace Infrastructure.Repositories
                     {
                         Id = g.Id,
                         Type = g.Type
-                        // Include other scalar properties you need from Genre
                     }).ToList(),
 
                     Authors = b.Authors.Select(a => new Author
                     {
                         Id = a.Id,
                         Name = a.Name
-                        // Include other scalar properties you need from Author
                     }).ToList()
                 })
                 .ToListAsync();
@@ -119,11 +114,23 @@ namespace Infrastructure.Repositories
             return (metadata, filteredBooks);
         }
 
-        public async Task<Book?> GetBookById(int bookId)
+        public async Task<Book?> GetBookByIdAsync(int bookId)
         {
             return await _context.Books.SingleOrDefaultAsync(b => b.Id == bookId);
         }
 
+        public async Task<Book?> ReserveBookAsync(Book book)
+        {
+            book.IsAvailable = false;
+            await _context.SaveChangesAsync();
+            return book;
+        }
 
+        public async Task<Book?> ChangeBookAsAvailableAsync(Book book)
+        {
+            book.IsAvailable = true;
+            await _context.SaveChangesAsync();
+            return book;
+        }
     }
 }

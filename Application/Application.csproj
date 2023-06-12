@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Entities\Books\Commands\" />
-    <Folder Include="Entities\Reservations\Queries\" />
   </ItemGroup>
 
 </Project>

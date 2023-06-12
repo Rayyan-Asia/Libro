@@ -25,7 +25,6 @@ namespace Infrastructure.Repositories
 
         public async Task<Reservation> AddReservationAsync(Reservation reservation)
         {
-            _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
             return reservation;
         }
@@ -33,7 +32,7 @@ namespace Infrastructure.Repositories
         public async Task<(PaginationMetadata, List<Reservation>)> GetAllReservationsAsync(int pageNumber, int pageSize)
         {
             var reservations = await _context.Reservations.AsNoTracking()
-                .Where(b=>b.IsPendingApproval == true)
+                .Where(r=>r.IsPendingApproval == true).OrderBy(r=>r.ReservationDate)
                 .ToListAsync();
 
             var count = reservations.Count;
@@ -45,7 +44,7 @@ namespace Infrastructure.Repositories
                 PageSize = pageSize
             };
 
-            var filteredDoctors = reservations.OrderBy(b => b.ReservationDate)
+            var filteredDoctors = reservations.OrderBy(r => r.ReservationDate)
                 .Skip(pageNumber * pageSize).Take(pageSize).ToList();
             return (metadata, filteredDoctors);
         }
@@ -67,5 +66,32 @@ namespace Infrastructure.Repositories
                 .Skip(pageNumber * pageSize).Take(pageSize).ToList();
             return (metadata, filteredDoctors);
         }
+
+        public async Task<Reservation?> ApproveReservationByIdAsync(int reservationId)
+        {
+            var reservation = await GetReservationByIdAsync(reservationId);
+            if (reservation == null || reservation.IsPendingApproval == false)
+                return null;
+            reservation.IsPendingApproval = false;
+            reservation.IsApproved = true;
+            await _context.SaveChangesAsync();
+            return reservation;
+        }
+        public async Task<bool> IsPatronEligableForReservationAsync(int userId)
+        {
+            var count = await _context.Reservations.Where(b=> b.IsPendingApproval == true && b.UserId == userId).CountAsync();
+            return count < 5;
+        }
+        public async Task<Reservation?> RejectReservationByIdAsync(int reservationId)
+        {
+            var reservation = await GetReservationByIdAsync(reservationId);
+            if (reservation == null || reservation.IsPendingApproval == false)
+                return null;
+            reservation.IsPendingApproval = false;
+            reservation.IsApproved = false;
+            await _context.SaveChangesAsync();
+            return reservation;
+        }
+
     }
 }

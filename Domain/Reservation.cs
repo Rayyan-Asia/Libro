@@ -23,5 +23,6 @@ namespace Domain
         [Required]
         public DateTime ReservationDate { get; set; } = DateTime.Now;
         public bool IsPendingApproval { get; set; } = true;
+        public bool IsApproved { get; set; } = false;
     }
 }

@@ -9,7 +9,8 @@ namespace Infrastructure.Interfaces
         Task<Reservation?> GetReservationByUserIdAndBookIdAsync(int userId, int bookId);
         Task<(PaginationMetadata, List<Reservation>)> GetAllReservationsAsync(int pageNumber, int pageSize);
         Task<(PaginationMetadata, List<Reservation>)> GetAllReservationsByUserIdAsync(int pageNumber, int pageSize, int userId);
-
-
+        Task<Reservation?> ApproveReservationByIdAsync(int reservationId);
+        Task<bool> IsPatronEligableForReservationAsync(int userId);
+        Task<Reservation?> RejectReservationByIdAsync(int reservationId);
     }
 }

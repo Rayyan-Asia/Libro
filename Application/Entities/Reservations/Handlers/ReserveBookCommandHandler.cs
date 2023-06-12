@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Reservations.Commnads;
 using AutoMapper;
 using Domain;
@@ -27,21 +22,29 @@ namespace Application.Entities.Reservations.Handlers
 
         public async Task<ReservationDto> Handle(ReserveBookCommand request, CancellationToken cancellationToken)
         {
-            var book = await _bookRepository.GetBookById(request.BookId);
+            var book = await _bookRepository.GetBookByIdAsync(request.BookId);
 
-            if(book==null)
+            if (book == null)
                 return null;
             if (!book.IsAvailable)
                 return null;
-            var reservation = new Reservation() {
+            if (await _reservationRepository.IsPatronEligableForReservationAsync(request.UserId))
+                return null;
+
+            await _bookRepository.ReserveBookAsync(book);
+
+            var reservation = new Reservation()
+            {
                 UserId = request.UserId,
                 BookId = request.BookId,
             };
-            if (await _reservationRepository.GetReservationByUserIdAndBookIdAsync(request.UserId, request.BookId) != null)
+
+            var oldReservation = await _reservationRepository.GetReservationByUserIdAndBookIdAsync(request.UserId, request.BookId);
+            if (oldReservation != null && oldReservation.IsPendingApproval == true)
                 return null;
 
             reservation = await _reservationRepository.AddReservationAsync(reservation);
-            
+
             return _mapper.Map<ReservationDto>(reservation);
         }
     }
