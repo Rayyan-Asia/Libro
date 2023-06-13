@@ -14,5 +14,6 @@ namespace Infrastructure.Interfaces
         Task<(PaginationMetadata, List<Loan>)> GetAllLoansAsync(int pageNumber, int pageSize);
         Task<(PaginationMetadata, List<Loan>)> GetAllLoansByUserIdAsync(int pageNumber, int pageSize, int userId);
         Task<bool> IsPatronEligableForLoanAsync(int userId);
+        Task<Loan> SetLoanReturnDate(Loan loan, DateTime date);
     }
 }

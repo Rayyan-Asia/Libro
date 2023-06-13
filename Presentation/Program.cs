@@ -33,6 +33,7 @@ namespace Presentation
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
             builder.Services.AddScoped<ILoanRepository, LoanRepository>();
+            builder.Services.AddScoped<IBookReturnRepository, BookReturnRepository>();
 
             builder.Services.AddScoped<UserValidator>();
 

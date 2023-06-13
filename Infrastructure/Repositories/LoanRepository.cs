@@ -71,5 +71,12 @@ namespace Infrastructure.Repositories
             var count = await _context.Loans.Where(b => b.ReturnDate == null && b.UserId == userId).CountAsync();
             return count < 5;
         }
+
+        public async Task<Loan> SetLoanReturnDate(Loan loan, DateTime date)
+        {
+            loan.ReturnDate = date;
+            await _context.SaveChangesAsync();
+            return loan;
+        }
     }
 }
