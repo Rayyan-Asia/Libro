@@ -14,6 +14,7 @@ namespace Application.Profiles
         public UserProfile()
         {
             CreateMap<User, UserDto>();
+            CreateMap<User, ProfileDto>();
         }
     }
 }

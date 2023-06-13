@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\Books\Commands\" />
+    <Folder Include="Entities\Profiles\Commands\" />
   </ItemGroup>
 
 </Project>

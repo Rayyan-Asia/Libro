@@ -1,14 +1,11 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Application;
-using Application.DTOs;
+﻿using Application;
+using Application.Entities.Profiles.Queries;
 using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
-using AutoMapper;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presentation.Validators;
 
 namespace Presentation.Controllers
 {
@@ -74,6 +71,19 @@ namespace Presentation.Controllers
             }
             return Unauthorized();
         }
+
+        [HttpGet("profile/{userid}")]
+
+        public async Task<IActionResult> ViewProfile(int userId)
+        { 
+            var query = new ViewProfileQuery() { PatronId = userId };
+            var result = await _mediator.Send(query);
+            if (result == null)
+                return BadRequest(); 
+            return Ok(result);
+
+        }
+
     }
 
 }

@@ -57,6 +57,44 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users.AnyAsync(r => r.Id == user.Id);
         }
+
+        public async Task<User?> GetUserProfileByIdAsync(int userId)
+        {
+            var user = await _context.Users
+              .Include(b => b.Loans)
+              .Include(b => b.Reservations)
+              .AsNoTracking()
+              .Select(b => new User
+              {
+                  Id = b.Id,
+                  Name = b.Name,
+                  PhoneNumber = b.PhoneNumber,
+                  Email = b.Email,
+
+
+                  Loans = b.Loans
+                    .Where(g => g.ReturnDate == null)
+                    .Select(g => new Loan
+                    {
+                        Id = g.Id,
+                        BookId = g.Id,
+                        LoanDate = g.LoanDate,
+                        DueDate = g.DueDate,
+                    }).ToList(),
+
+                  Reservations = b.Reservations.Where(b => b.IsPendingApproval == true)
+                  .Select(g => new Reservation
+                  {
+                      Id = g.Id,
+                      UserId = g.UserId,
+                      BookId = g.Id,
+                      ReservationDate = g.ReservationDate,
+                  }).ToList(),
+
+              }).SingleOrDefaultAsync(u=>u.Id == userId);
+
+            return user;
+        }
     }
 }
 

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Domain;
 
-namespace Domain
+namespace Application.DTOs
 {
-    public class User
+    public class ProfileDto 
     {
         [Required]
         public int Id { get; set; }
@@ -27,19 +28,7 @@ namespace Domain
 
         [Required]
         public Role Role { get; set; } = Role.Patron;
-
-        [Required]
-        public string Salt { get; set; }
-
-        [Required]
-        public string HashedPassword { get; set; }
-
         public List<Loan> Loans { get; set; }
         public List<Reservation> Reservations { get; set; }
-        public User()
-        {
-            Loans = new();
-            Reservations = new();
-        }
     }
 }

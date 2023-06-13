@@ -11,5 +11,6 @@ namespace Infrastructure.Interfaces
         Task<User?> GetUserByIdAsync(int userId);
         Task<User> UpdateUserAsync(User user);
         Task<bool> UserExistsAsync(User user);
+        Task<User?> GetUserProfileByIdAsync(int userId);
     }
 }
