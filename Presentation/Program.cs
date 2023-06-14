@@ -73,6 +73,11 @@ namespace Presentation
 
             builder.Services.AddAuthorization(options =>
             {
+                options.AddPolicy("AdministratorOrLibrarianRequired", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("Administrator", "Librarian");
+                });
                 options.AddPolicy("AdministratorRequired", policy =>
                 {
                     policy.RequireAuthenticatedUser();

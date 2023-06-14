@@ -73,7 +73,7 @@ namespace Presentation.Controllers
         }
 
         [HttpGet("profile/{userid}")]
-
+        [Authorize]
         public async Task<IActionResult> ViewProfile(int userId)
         { 
             var query = new ViewProfileQuery() { PatronId = userId };
@@ -84,6 +84,27 @@ namespace Presentation.Controllers
 
         }
 
+        [HttpGet("profile")]
+        [Authorize(Policy = "PatronRequired")]
+        public async Task<IActionResult> ViewProfile()
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+            {
+                if (authorizationHeader.Count > 0)
+                {
+                    var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
+                    var user = JwtService.GetUserFromPayload(token);
+                    if (user == null) return BadRequest();
+                    var query = new ViewProfileQuery() { PatronId = user.Id };
+                    var result = await _mediator.Send(query);
+                    if (result == null)
+                        return BadRequest();
+                    return Ok(result);
+
+                }
+            }
+            return Unauthorized();
+        }
     }
 
 }

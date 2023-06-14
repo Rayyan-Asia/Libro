@@ -78,5 +78,28 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return loan;
         }
+
+
+        public async Task<bool> ExcuseLoan(int loanId)
+        {
+            var loan = await GetLoanByIdAsync(loanId);
+            if (loan == null)
+            {
+                return false;
+            }
+            loan.isExcused = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> ExcuseLoansFromUser(int userId)
+        {
+            var loans = await _context.Loans.Where(loan => loan.UserId == userId).ToListAsync();
+
+            loans.ForEach(loan => loan.isExcused = true);
+
+            await _context.SaveChangesAsync();
+            return loans.Count > 0;
+        }
+
     }
 }

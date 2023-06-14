@@ -30,10 +30,10 @@ namespace Application.Entities.Returns.Handlers
                 return null;
             }
 
-            if (loan.UserId != request.UserId)
+            if (loan.UserId != request.UserId )
                 return null;
 
-            if (await _bookReturnRepository.GetReturnByLoanIdAsync(loan.Id) != null)
+            if (await _bookReturnRepository.GetReturnByLoanIdAsync(loan.Id) != null) // makes sure the user make another return on the same loan.
                 return null;
 
             var bookReturn = new BookReturn
