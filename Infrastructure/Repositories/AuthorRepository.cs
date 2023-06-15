@@ -39,5 +39,15 @@ namespace Infrastructure.Repositories
                 .Take(pageSize).ToList();
             return (metadata, filteredAuthors);
         }
+
+        public async Task<bool> AuthorExistsAsync(int authorId)
+        {
+            return await _context.Authors.AnyAsync(a => a.Id == authorId);
+        }
+
+        public async Task<Author?> GetAuthorByIdAsync(int authorId)
+        {
+            return await _context.Authors.SingleOrDefaultAsync(a => a.Id == authorId);
+        }
     }
 }

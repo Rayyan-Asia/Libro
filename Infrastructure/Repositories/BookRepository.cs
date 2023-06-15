@@ -132,5 +132,19 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return book;
         }
+
+        public async Task<Book?> AddBookAsync(Book book)
+        {
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+            return book;
+        }
+
+        public async Task<Book?> UpdateBookAsync(Book book)
+        {
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+            return book;
+        }
     }
 }

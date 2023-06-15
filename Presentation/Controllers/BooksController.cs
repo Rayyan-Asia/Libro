@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Application.Entities.Books.Commands;
 using Application.Entities.Books.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,15 @@ namespace Presentation.Controllers
 
         }
 
+
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] AddBookCommand addBookCommand)
+        {
+            if (addBookCommand == null) return BadRequest();
+            var book = await _mediator.Send(addBookCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
 
     }
 }

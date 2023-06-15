@@ -14,5 +14,8 @@ namespace Infrastructure.Interfaces
         public Task<Book?> GetBookByIdAsync(int bookId);
         public Task<Book?> ReserveBookAsync(Book book);
         public Task<Book?> ChangeBookAsAvailableAsync(Book book);
+        public Task<Book?> AddBookAsync(Book book);
+        public Task<Book?> UpdateBookAsync(Book book);
+
     }
 }
