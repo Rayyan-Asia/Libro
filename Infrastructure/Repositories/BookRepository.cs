@@ -144,6 +144,17 @@ namespace Infrastructure.Repositories
         {
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
+            book.Genres = book.Genres.Select(g => new Genre
+            {
+                Id = g.Id,
+                Type = g.Type
+            }).ToList();
+
+            book.Authors = book.Authors.Select(a => new Author
+            {
+                Id = a.Id,
+                Name = a.Name
+            }).ToList();
             return book;
         }
     }

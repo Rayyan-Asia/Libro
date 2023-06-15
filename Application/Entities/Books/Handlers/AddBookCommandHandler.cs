@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Books.Commands;
 using AutoMapper;
 using Domain;
@@ -31,23 +26,27 @@ namespace Application.Entities.Books.Handlers
         {
             if (!await HasValidIds(request)) return null;
 
-            var book = new Book() { 
+            var book = new Book()
+            {
                 Title = request.Title,
                 Description = request.Description,
+                PublicationDate = request.PublicationDate,
             };
 
             book = await _bookRepository.AddBookAsync(book);
 
-            await AddAuthorsToBook(request.Authors,book);
-            await AddGenresToBook(request.Genres,book);
+            await AddAuthorsToBook(request.Authors, book);
+            await AddGenresToBook(request.Genres, book);
 
             book = await _bookRepository.UpdateBookAsync(book);
+
             return _mapper.Map<BookDto>(book);
         }
 
         private async Task AddGenresToBook(List<BookGenreDto> genres, Book book)
         {
-            foreach (var genre in genres) {
+            foreach (var genre in genres)
+            {
 
                 var existingGenre = await _genreRepository.GetGenreByIdAsync(genre.Id);
                 book.Genres.Add(existingGenre);
