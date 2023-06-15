@@ -34,6 +34,7 @@ namespace Presentation
             builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
             builder.Services.AddScoped<ILoanRepository, LoanRepository>();
             builder.Services.AddScoped<IBookReturnRepository, BookReturnRepository>();
+            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
             builder.Services.AddScoped<UserValidator>();
 

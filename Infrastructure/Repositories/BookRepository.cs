@@ -51,9 +51,9 @@ namespace Infrastructure.Repositories
                 PageSize = pageSize
             };
 
-            var filteredDoctors = books.OrderBy(b => b.PublicationDate)
+            var filteredBooks = books.OrderBy(b => b.PublicationDate)
                 .Skip(pageNumber * pageSize).Take(pageSize).ToList();
-            return (metadata, filteredDoctors);
+            return (metadata, filteredBooks);
         }
         public async Task<(PaginationMetadata, List<Book>)> SearchBooksAsync(string? title, string? author, string? genre, int pageNumber, int pageSize)
         {
