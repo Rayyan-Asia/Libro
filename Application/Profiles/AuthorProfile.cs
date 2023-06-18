@@ -9,7 +9,6 @@ namespace Application.Profiles
         public AuthorProfile()
         {
             CreateMap<Author, AuthorDto>();
-            CreateMap<BookAuthorDto, Author>();
         }
     }
 }

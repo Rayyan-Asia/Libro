@@ -2,7 +2,7 @@
 
 namespace Application.DTOs
 {
-    public class BookGenreDto
+    public class IdDto
     {
         [Required]
         public int Id { get; set; }

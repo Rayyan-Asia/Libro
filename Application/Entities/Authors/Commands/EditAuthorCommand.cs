@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain;
+using Application.DTOs;
+using MediatR;
 
-namespace Application.DTOs
+namespace Application.Entities.Authors.Commands
 {
-    public class AuthorDto
+    public class EditAuthorCommand : IRequest<AuthorDto>
     {
-
         [Required]
         public int Id { get; set; }
 
@@ -21,11 +21,6 @@ namespace Application.DTOs
         [MaxLength(500)]
         public string Description { get; set; }
 
-        public List <BookDto> Books { get; set; }
-
-        public AuthorDto()
-        {
-            Books = new();
-        }
+        public List<IdDto> Books;
     }
 }

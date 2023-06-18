@@ -55,7 +55,7 @@ namespace Application.Entities.Books.Handlers
             return _mapper.Map<BookDto>(book);
         }
 
-        private async Task AddGenres(List<BookGenreDto> genres, Book book)
+        private async Task AddGenres(List<IdDto> genres, Book book)
         {
 
             foreach (var genre in genres)
@@ -66,7 +66,7 @@ namespace Application.Entities.Books.Handlers
 
         }
 
-        private async Task AddAuthors(List<BookAuthorDto> authors, Book book)
+        private async Task AddAuthors(List<IdDto> authors, Book book)
         {
             foreach (var author in authors)
             {

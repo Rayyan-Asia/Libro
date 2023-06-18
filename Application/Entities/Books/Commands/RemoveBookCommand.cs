@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediatR;
 
-namespace Application.DTOs
+namespace Application.Entities.Books.Commands
 {
-    public class BookAuthorDto
+    public class RemoveBookCommand : IRequest<bool>
     {
         [Required]
-        public int Id { get; set; }
+        public int BookId { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace Infrastructure.Interfaces
         public Task<Book?> ChangeBookAsAvailableAsync(Book book);
         public Task<Book?> AddBookAsync(Book book);
         public Task<Book?> UpdateBookAsync(Book book);
-
+        public Task RemoveBookAsync(Book book);
     }
 }

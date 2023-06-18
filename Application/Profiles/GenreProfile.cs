@@ -8,8 +8,8 @@ namespace Application.Profiles
     {
         public GenreProfile()
         {
-            CreateMap<Genre, BookGenreDto>();
-            CreateMap<BookGenreDto, Genre>();
+            CreateMap<Genre, IdDto>();
+            CreateMap<IdDto, Genre>();
         }
     }
 }

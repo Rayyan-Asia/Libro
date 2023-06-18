@@ -26,6 +26,9 @@ namespace Application.Entities.Books.Handlers
         {
             if (!await HasValidIds(request)) return null;
 
+            if(request.Authors.Count() <1 || request.Genres.Count() < 1)
+                return null;
+
             var book = new Book()
             {
                 Title = request.Title,
@@ -43,7 +46,7 @@ namespace Application.Entities.Books.Handlers
             return _mapper.Map<BookDto>(book);
         }
 
-        private async Task AddGenresToBook(List<BookGenreDto> genres, Book book)
+        private async Task AddGenresToBook(List<IdDto> genres, Book book)
         {
             foreach (var genre in genres)
             {
@@ -53,7 +56,7 @@ namespace Application.Entities.Books.Handlers
             }
         }
 
-        private async Task AddAuthorsToBook(List<BookAuthorDto> authors, Book book)
+        private async Task AddAuthorsToBook(List<IdDto> authors, Book book)
         {
             foreach (var author in authors)
             {

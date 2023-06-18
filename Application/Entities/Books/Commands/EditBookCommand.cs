@@ -19,8 +19,8 @@ namespace Application.Entities.Books.Commands
         [Required]
         public DateTime PublicationDate { get; set; }
 
-        public List<BookGenreDto> Genres { get; set; }
+        public List<IdDto> Genres { get; set; }
 
-        public List<BookAuthorDto> Authors { get; set; }
+        public List<IdDto> Authors { get; set; }
     }
 }

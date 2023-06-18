@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Authors\Commands\" />
     <Folder Include="Entities\Profiles\Commands\" />
   </ItemGroup>
 

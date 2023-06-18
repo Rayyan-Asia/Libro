@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Domain;
 using Infrastructure.Interfaces;
 using Libro.Infrastructure;
@@ -25,6 +21,24 @@ namespace Infrastructure.Repositories
             var listToRemove = await _context.BookAuthors.Where(ba => ba.BookId == bookId).ToListAsync();
             _context.BookAuthors.RemoveRange(listToRemove);
             await _context.SaveChangesAsync();
-        } 
+        }
+
+        public async Task RemoveBooksFromAuthor(int authorId)
+        {
+            var listToRemove = await _context.BookAuthors.Where(ba => ba.AuthorId == authorId).ToListAsync();
+            _context.BookAuthors.RemoveRange(listToRemove);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetBookAuthorsCountAsync(int bookId)
+        {
+            var list = await _context.BookAuthors.Where(ba => ba.BookId == bookId).AsNoTracking().ToListAsync();
+            return list.Count;
+        }
+
+        public async Task<List<BookAuthor>> GetAuthorBooksAsync(int authorId)
+        {
+            return await _context.BookAuthors.Where(ba => ba.AuthorId == authorId).AsNoTracking().ToListAsync();
+        }
     }
 }

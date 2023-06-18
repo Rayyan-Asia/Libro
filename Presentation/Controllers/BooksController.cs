@@ -23,7 +23,7 @@ namespace Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromBody] BrowseBooksQuery? browseBooksQuery)
         {
-            if(browseBooksQuery == null) browseBooksQuery = new BrowseBooksQuery();
+            if (browseBooksQuery == null) browseBooksQuery = new BrowseBooksQuery();
             var (pagination, books) = await _mediator.Send(browseBooksQuery);
             Response.Headers.Add("X-Pagination",
                JsonSerializer.Serialize(pagination));
@@ -62,6 +62,57 @@ namespace Presentation.Controllers
             if (book == null) return BadRequest();
             return Ok(book);
         }
+
+
+        [HttpPost("add/author")]
+        public async Task<IActionResult> AddAuthorToBook([FromBody] AddAuthorToBookCommand addAuthorCommand)
+        {
+            if (addAuthorCommand == null) return BadRequest();
+            var book = await _mediator.Send(addAuthorCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
+
+        [HttpPost("remove/author")]
+        public async Task<IActionResult> Edit([FromBody] RemoveAuthorFromBookCommand removeAuthorCommand)
+        {
+            if (removeAuthorCommand == null) return BadRequest();
+            var book = await _mediator.Send(removeAuthorCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
+
+
+        [HttpPost("add/genre")]
+        public async Task<IActionResult> AddGenreToBook([FromBody] AddGenreToBookCommand addGenreCommand)
+        {
+            if (addGenreCommand == null) return BadRequest();
+            var book = await _mediator.Send(addGenreCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
+
+        [HttpPost("remove/genre")]
+        public async Task<IActionResult> RemoveGenreFromBook([FromBody] RemoveGenreFromBookCommand removeGenreCommand)
+        {
+            if (removeGenreCommand == null) return BadRequest();
+            var book = await _mediator.Send(removeGenreCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
+
+        [HttpPost("remove/{bookId}")]
+        public async Task<IActionResult> RemoveBook([FromRoute] int bookId)
+        {
+            if (bookId == 0)
+                return BadRequest();
+            RemoveBookCommand removeBookCommand = new RemoveBookCommand() {BookId = bookId };
+            var book = await _mediator.Send(removeBookCommand);
+            if (book == false) return BadRequest();
+            return Ok();
+        }
+
+
 
     }
 }

@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Application.DTOs;
+using MediatR;
+
+namespace Application.Entities.Books.Commands
+{
+    public class RemoveGenreFromBookCommand : IRequest<BookDto>
+    {
+        [Required]
+        public int BookId { get; set; }
+
+        [Required]
+        public int GenreId { get; set; }
+    }
+
+}

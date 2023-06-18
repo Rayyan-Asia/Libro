@@ -116,7 +116,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Book?> GetBookByIdAsync(int bookId)
         {
-            return await _context.Books.SingleOrDefaultAsync(b => b.Id == bookId);
+            return await _context.Books.Include(b => b.Genres).Include(b=>b.Authors).SingleOrDefaultAsync(b => b.Id == bookId);
         }
 
         public async Task<Book?> ReserveBookAsync(Book book)
@@ -157,5 +157,12 @@ namespace Infrastructure.Repositories
             }).ToList();
             return book;
         }
+
+        public async Task RemoveBookAsync(Book book)
+        {
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
