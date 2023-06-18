@@ -54,5 +54,14 @@ namespace Presentation.Controllers
             return Ok(book);
         }
 
+        [HttpPost("edit")]
+        public async Task<IActionResult> Edit([FromBody] EditBookCommand editBookCommand)
+        {
+            if (editBookCommand == null) return BadRequest();
+            var book = await _mediator.Send(editBookCommand);
+            if (book == null) return BadRequest();
+            return Ok(book);
+        }
+
     }
 }

@@ -36,7 +36,8 @@ namespace Presentation
             builder.Services.AddScoped<IBookReturnRepository, BookReturnRepository>();
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-
+            builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
+            builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
 
             builder.Services.AddScoped<UserValidator>();
 
