@@ -5,25 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
-using Domain;
 using MediatR;
 
-namespace Application.Entities.Authors.Commands
+namespace Application.Entities.ReadingLists.Commands
 {
-    public class AddAuthorCommand : IRequest<AuthorDto>
+    public class EditReadingListCommand : IRequest<ReadingListDto>
     {
-        
+        public int Id { get; set; }
+        public List<IdDto> Books { get; set; }
+
         [Required]
-        [MaxLength(32)]
         public string Name { get; set; }
 
-        [MaxLength(500)]
+        [Required]
         public string Description { get; set; }
 
-        public List<IdDto> Books {get; set; }
-
-        public AddAuthorCommand() { 
-            Books = new List<IdDto>();
-        }
+        public int UserId { get; set; }
     }
 }

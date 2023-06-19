@@ -36,10 +36,13 @@ namespace Domain
 
         public List<Loan> Loans { get; set; }
         public List<Reservation> Reservations { get; set; }
+
+        public List<ReadingList> ReadingLists { get; set; }
         public User()
         {
             Loans = new();
             Reservations = new();
+            ReadingLists = new();
         }
     }
 }

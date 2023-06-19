@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Authors.Commands;
 using AutoMapper;
+using Domain;
 using Infrastructure.Interfaces;
 using MediatR;
 
@@ -34,6 +35,13 @@ namespace Application.Entities.Authors.Handlers
                 return null;
             author.Books.Remove(book);
             await _authorRepository.UpdateAuthorAsync(author);
+            author.Books = author.Books.Select(b => new Book
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Description = b.Description,
+                PublicationDate = b.PublicationDate,
+            }).ToList();
             return _mapper.Map<AuthorDto>(author);
         }
     }

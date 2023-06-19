@@ -19,12 +19,15 @@ namespace Domain
         [Required]
         public DateTime PublicationDate { get; set; }
         public List<Author> Authors{ get; set; }
+
+        public List<ReadingList> ReadingLists { get; set; }
         public bool IsAvailable { get; set; } = true;
 
         public Book()
         {
             Authors = new List<Author>();
             Genres = new List<Genre>();
+            ReadingLists = new List<ReadingList>();
         }
     }
 }

@@ -21,6 +21,6 @@ namespace Application.Entities.Authors.Commands
         [MaxLength(500)]
         public string Description { get; set; }
 
-        public List<IdDto> Books;
+        public List<IdDto> Books { get; set; }
     }
 }

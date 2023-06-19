@@ -24,6 +24,8 @@ namespace Libro.Infrastructure
             ConfigureLoanProperties();
             ConfigureBookAuthorProperties();
             ConfigureBookGenreProperties();
+            ConfigureReadingListProperties();
+            ConfigureListBookProperties();
             ConfigureManytoManyRelationships();
         }
 
@@ -94,6 +96,22 @@ namespace Libro.Infrastructure
             _modelBuilder.Entity<BookGenre>().HasKey(ec => ec.BookId);
             _modelBuilder.Entity<BookGenre>().HasKey(ec => ec.GenreId);
         }
+
+
+        public void ConfigureReadingListProperties()
+        {
+            _modelBuilder.Entity<ReadingList>().Property<int>(d => d.Id).IsRequired();
+            _modelBuilder.Entity<ReadingList>().Property<int>(d => d.UserId).IsRequired();
+            _modelBuilder.Entity<ReadingList>().Property<DateTime>(d => d.CreationDate).HasColumnType("Date").IsRequired();
+            _modelBuilder.Entity<ReadingList>().Property<string>(d => d.Description).HasMaxLength(500);
+            _modelBuilder.Entity<ReadingList>().Property<string>(d => d.Name).HasMaxLength(100).IsRequired();
+        }
+
+        public void ConfigureListBookProperties()
+        {
+            _modelBuilder.Entity<ReadingListBook>().HasKey(ec => ec.BookId);
+            _modelBuilder.Entity<ReadingListBook>().HasKey(ec => ec.ReadingListId);
+        }
         public void ConfigureManytoManyRelationships()
         {
 
@@ -134,6 +152,19 @@ namespace Libro.Infrastructure
                                 ba.HasKey(b => new { b.BookId, b.GenreId });
                             }
                         );
+
+
+            _modelBuilder.Entity<ReadingList>().HasMany(b => b.Books).WithMany(b => b.ReadingLists)
+                .UsingEntity<ReadingListBook>(
+                    ba => ba.HasOne(b => b.Book).WithMany().HasForeignKey(b => b.BookId),
+                    ba => ba.HasOne(b => b.ReadingList).WithMany().HasForeignKey(ba => ba.ReadingListId),
+
+                    ba => {
+                        ba.ToTable("ReadingListBook");
+                        ba.HasKey(b => new { b.ReadingListId, b.BookId });
+                    }
+
+                ) ;
 
         }
 

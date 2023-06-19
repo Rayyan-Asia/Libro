@@ -10,5 +10,6 @@ namespace Application.Profiles
         {
             CreateMap<Author, AuthorDto>();
         }
+
     }
 }

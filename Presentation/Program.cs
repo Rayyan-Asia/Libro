@@ -38,6 +38,8 @@ namespace Presentation
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
             builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+            builder.Services.AddScoped<IReadingListRepository, ReadingListRepository>();
+            builder.Services.AddScoped<IReadingListBookRepository, ReadingListBookRepository>();
 
             builder.Services.AddScoped<UserValidator>();
 

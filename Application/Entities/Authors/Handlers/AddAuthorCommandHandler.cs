@@ -40,7 +40,13 @@ namespace Application.Entities.Authors.Handlers
             author.Description = request.Description;
 
             author  = await _authorRepository.AddAuthorAsync(author);
-
+            author.Books = author.Books.Select(b => new Book
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Description = b.Description,
+                PublicationDate = b.PublicationDate,
+            }).ToList();
             return _mapper.Map<AuthorDto>(author);
         }
     }
