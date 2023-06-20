@@ -112,6 +112,15 @@ namespace Libro.Infrastructure
             _modelBuilder.Entity<ReadingListBook>().HasKey(ec => ec.BookId);
             _modelBuilder.Entity<ReadingListBook>().HasKey(ec => ec.ReadingListId);
         }
+
+        public void ConfigureFeedbackProperties()
+        {
+            _modelBuilder.Entity<Feedback>().Property<int>(d => d.Id).IsRequired();
+            _modelBuilder.Entity<Feedback>().Property<int>(d => d.UserId).IsRequired();
+            _modelBuilder.Entity<Feedback>().Property<DateTime>(d => d.CreatedDate).HasColumnType("Date").IsRequired();
+            _modelBuilder.Entity<Feedback>().Property<string>(d => d.Review).HasMaxLength(500);
+            _modelBuilder.Entity<Feedback>().Property<Rating>(d => d.Rating).IsRequired();
+        }
         public void ConfigureManytoManyRelationships()
         {
 

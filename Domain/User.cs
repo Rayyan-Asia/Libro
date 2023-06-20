@@ -33,16 +33,16 @@ namespace Domain
 
         [Required]
         public string HashedPassword { get; set; }
-
         public List<Loan> Loans { get; set; }
         public List<Reservation> Reservations { get; set; }
-
         public List<ReadingList> ReadingLists { get; set; }
+        public List<Feedback> Feedbacks { get; set; }
         public User()
         {
             Loans = new();
             Reservations = new();
             ReadingLists = new();
+            Feedbacks = new();
         }
     }
 }

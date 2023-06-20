@@ -21,6 +21,8 @@ namespace Domain
         public List<Author> Authors{ get; set; }
 
         public List<ReadingList> ReadingLists { get; set; }
+
+        public List<Feedback> Feedbacks { get; set; }
         public bool IsAvailable { get; set; } = true;
 
         public Book()
@@ -28,6 +30,7 @@ namespace Domain
             Authors = new List<Author>();
             Genres = new List<Genre>();
             ReadingLists = new List<ReadingList>();
+            Feedbacks = new List<Feedback>();
         }
     }
 }

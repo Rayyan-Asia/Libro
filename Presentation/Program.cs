@@ -40,6 +40,7 @@ namespace Presentation
             builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
             builder.Services.AddScoped<IReadingListRepository, ReadingListRepository>();
             builder.Services.AddScoped<IReadingListBookRepository, ReadingListBookRepository>();
+            builder.Services.AddScoped<IFeebackRepository, FeebackRepository>();
 
             builder.Services.AddScoped<UserValidator>();
 
