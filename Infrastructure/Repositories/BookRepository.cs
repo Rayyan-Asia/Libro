@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Linq;
+using Domain;
 using Infrastructure.Interfaces;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -163,6 +164,53 @@ namespace Infrastructure.Repositories
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Book?> GetRecommendedBookAsync(int userId)
+        {
+            var user = await _context.Users.Include(u => u.Loans)
+                                           .ThenInclude(l => l.Book)
+                                           .ThenInclude(b=>b.Genres)
+                                           .SingleOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            // Count the frequency of genres in the user's loan history
+            var genreCounts = new Dictionary<Genre, int>();
+            foreach (var loan in user.Loans)
+            {
+                foreach (var genre in loan.Book.Genres)
+                {
+                    if (!genreCounts.ContainsKey(genre))
+                    {
+                        genreCounts[genre] = 0;
+                    }
+                    genreCounts[genre]++;
+                }
+            }
+
+            // Sort the genres based on frequency in descending order
+            var sortedGenres = genreCounts.OrderByDescending(g => g.Value);
+
+            var topGenre = sortedGenres.FirstOrDefault().Key;
+
+            if (topGenre == null)
+            {
+                // The user has loaned books from all genres, so no recommendation can be made.
+                return null;
+            }
+
+            // Get a random book from the top genre
+            var recommendedBook = await _context.Books
+                                  .Where(b => b.Genres.Any(genre => genre.Type == topGenre.Type)
+                                                    && b.Id != user.Loans.Select(l => l.Book.Id).FirstOrDefault())
+                                  .FirstOrDefaultAsync();
+
+            return recommendedBook;
+        }
+
 
     }
 }

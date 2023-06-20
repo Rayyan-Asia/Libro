@@ -7,7 +7,7 @@ using Domain;
 
 namespace Infrastructure.Interfaces
 {
-    public interface IBookRepository
+    public interface IBookRepository 
     {
         public Task<(PaginationMetadata, List<Book>)> GetBooksAsync(int pageNumber, int pageSize);
         public Task<(PaginationMetadata, List<Book>)> SearchBooksAsync(string? title, string? author, string? genre, int pageNumber, int pageSize);
@@ -17,5 +17,6 @@ namespace Infrastructure.Interfaces
         public Task<Book?> AddBookAsync(Book book);
         public Task<Book?> UpdateBookAsync(Book book);
         public Task RemoveBookAsync(Book book);
+        public Task<Book?> GetRecommendedBookAsync(int userId);
     }
 }
