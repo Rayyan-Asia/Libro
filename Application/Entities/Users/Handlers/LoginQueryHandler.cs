@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Infrastructure;
-using Infrastructure.Interfaces;
 using MediatR;
 using Application.DTOs;
-using Microsoft.Extensions.Configuration;
 using Application.Entities.Users.Queries;
+using Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Entities.Users.Handlers
 {

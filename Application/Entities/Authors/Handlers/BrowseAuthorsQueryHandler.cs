@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Authors.Queries;
+using Application.Interfaces;
 using AutoMapper;
-using Infrastructure;
-using Infrastructure.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Authors.Handlers

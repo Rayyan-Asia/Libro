@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Authors.Commands;
+using Application.Interfaces;
 using AutoMapper;
 using Domain;
-using Infrastructure.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Authors.Handlers

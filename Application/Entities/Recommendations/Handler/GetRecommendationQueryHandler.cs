@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs;
+﻿using Application.DTOs;
 using Application.Entities.Recommendations.Query;
+using Application.Interfaces;
 using AutoMapper;
-using Infrastructure.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Recommendations.Handler
 {
-    public class GetRecommendationQueryHandler : IRequestHandler<GetRecommendationQuery,BookDto>
+    public class GetRecommendationQueryHandler : IRequestHandler<GetRecommendationQuery, BookDto>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;

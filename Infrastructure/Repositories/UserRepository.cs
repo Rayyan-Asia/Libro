@@ -1,10 +1,12 @@
-﻿using Domain;
-using Infrastructure.Interfaces;
+﻿using Application.Interfaces;
+using AutoDependencyRegistration.Attributes;
+using Domain;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
+    [RegisterClassAsScoped]
     public class UserRepository : IUserRepository
     {
         private readonly LibroDbContext _context;

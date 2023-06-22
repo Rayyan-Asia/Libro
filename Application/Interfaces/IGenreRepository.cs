@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain;
 
-namespace Infrastructure.Interfaces
+namespace Application.Interfaces
 {
     public interface IGenreRepository
     {

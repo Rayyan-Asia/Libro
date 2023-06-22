@@ -2,7 +2,7 @@
 using Application.Entities.Profiles.Queries;
 using AutoMapper;
 using Domain;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Profiles.Handlers

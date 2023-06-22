@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Users.Commands;
+using Application.Interfaces;
 using AutoMapper;
 using Domain;
-using Infrastructure;
-using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 
@@ -26,6 +25,7 @@ namespace Application.Entities.Users.Handlers
             _mapper = mapper;
             _configuration = configuration;
         }
+
         public async Task<AuthenticationResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(request.Email);

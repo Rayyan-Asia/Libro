@@ -7,7 +7,7 @@ using Application.DTOs;
 using Application.Entities.Reservations.Commnads;
 using AutoMapper;
 using Domain;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Reservations.Handlers

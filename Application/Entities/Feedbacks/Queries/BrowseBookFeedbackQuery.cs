@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
-using Infrastructure;
 using MediatR;
 
 namespace Application.Entities.Feedbacks.Queries

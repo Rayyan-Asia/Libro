@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Entities.Users.Commands;
 using AutoMapper;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Users.Handlers

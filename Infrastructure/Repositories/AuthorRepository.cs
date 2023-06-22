@@ -4,13 +4,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Application;
+using Application.Interfaces;
 using Domain;
-using Infrastructure.Interfaces;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using AutoDependencyRegistration.Attributes;
 
 namespace Infrastructure.Repositories
 {
+    [RegisterClassAsScoped]
     public class AuthorRepository : IAuthorRepository
     {
         private readonly LibroDbContext _context;

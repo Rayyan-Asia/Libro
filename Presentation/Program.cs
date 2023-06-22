@@ -1,15 +1,16 @@
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 using Application.Profiles;
+using AutoDependencyRegistration;
 using FluentValidation;
-using Infrastructure.Interfaces;
-using Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Validators;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Presentation
 {
@@ -19,7 +20,14 @@ namespace Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .ReadFrom.Configuration(builder.Configuration)
+                .Enrich.FromLogContext()
+                .CreateLogger();
 
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -27,22 +35,9 @@ namespace Presentation
 
             builder.Services.AddDbContext<LibroDbContext>(DbContextOptions => DbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:LibroDbConnectionString"]));
 
-            builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+            builder.Services.AddFluentValidationAutoValidation();
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IBookRepository, BookRepository>();
-            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
-            builder.Services.AddScoped<ILoanRepository, LoanRepository>();
-            builder.Services.AddScoped<IBookReturnRepository, BookReturnRepository>();
-            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-            builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
-            builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
-            builder.Services.AddScoped<IReadingListRepository, ReadingListRepository>();
-            builder.Services.AddScoped<IReadingListBookRepository, ReadingListBookRepository>();
-            builder.Services.AddScoped<IFeebackRepository, FeebackRepository>();
-
-            builder.Services.AddScoped<UserValidator>();
+            builder.Services.AutoRegisterDependencies();
 
             builder.Services.AddControllers(options =>
             {
@@ -103,6 +98,8 @@ namespace Presentation
                     policy.RequireRole("Patron");
                 });
             });
+
+
 
             var app = builder.Build();
             if (app.Environment.IsDevelopment())

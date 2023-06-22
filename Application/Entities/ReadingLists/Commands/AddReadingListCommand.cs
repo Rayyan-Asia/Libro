@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
-using Infrastructure.Interfaces;
 using MediatR;
 
 namespace Application.Entities.ReadingLists.Commands

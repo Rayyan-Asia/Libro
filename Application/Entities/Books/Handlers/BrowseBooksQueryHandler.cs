@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Books.Queries;
 using AutoMapper;
-using Infrastructure;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Books.Handlers

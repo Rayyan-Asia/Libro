@@ -3,8 +3,7 @@ using Application.Entities.Returns.Commands;
 using Application.Entities.Returns.Queries;
 using AutoMapper;
 using Domain;
-using Infrastructure;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Returns.Handlers

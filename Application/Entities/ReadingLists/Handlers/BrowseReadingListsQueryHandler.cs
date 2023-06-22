@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Books.Commands;
 using Application.Entities.ReadingLists.Queries;
+using Application.Interfaces;
 using AutoMapper;
-using Infrastructure;
-using Infrastructure.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Application.Entities.ReadingLists.Handlers
 {

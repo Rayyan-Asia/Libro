@@ -2,7 +2,7 @@
 using Application.Entities.ReadingLists.Commands;
 using AutoMapper;
 using Domain;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.ReadingLists.Handlers

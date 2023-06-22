@@ -1,6 +1,6 @@
 ﻿using Domain;
 
-namespace Infrastructure.Interfaces
+namespace Application.Interfaces
 {
     public interface IFeebackRepository
     {

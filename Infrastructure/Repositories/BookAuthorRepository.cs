@@ -1,11 +1,13 @@
 ﻿using System.Net;
+using Application.Interfaces;
+using AutoDependencyRegistration.Attributes;
 using Domain;
-using Infrastructure.Interfaces;
 using Libro.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
+    [RegisterClassAsScoped]
     public class BookAuthorRepository : IBookAuthorRepository
     {
 

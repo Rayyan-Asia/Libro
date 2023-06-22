@@ -7,8 +7,7 @@ using Application.DTOs;
 using Application.Entities.Books.Queries;
 using Application.Entities.Reservations.Queries;
 using AutoMapper;
-using Infrastructure;
-using Infrastructure.Interfaces;
+using Application.Interfaces;
 using MediatR;
 
 namespace Application.Entities.Reservations.Handlers

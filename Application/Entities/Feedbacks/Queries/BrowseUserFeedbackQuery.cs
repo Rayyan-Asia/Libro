@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.DTOs;
-using Infrastructure;
 using MediatR;
 
 namespace Application.Entities.Feedbacks.Queries

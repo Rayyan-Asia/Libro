@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Reservations.Queries;
 using AutoMapper;
-using Infrastructure.Interfaces;
-using Infrastructure;
+using Application.Interfaces;
 using MediatR;
 using Application.Entities.Returns.Queries;
 
