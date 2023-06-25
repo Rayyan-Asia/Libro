@@ -2,13 +2,11 @@ using System.Reflection;
 using System.Text;
 using Application.Profiles;
 using AutoDependencyRegistration;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Presentation.Validators;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -49,7 +47,6 @@ namespace Presentation
                 typeof(UserProfile).GetTypeInfo().Assembly,
                 typeof(BookProfile).GetTypeInfo().Assembly);
             builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
-
 
             builder.Services.AddAuthentication("Bearer")
               .AddJwtBearer(options =>

@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.ReadingLists.Handlers
 {
@@ -12,12 +13,14 @@ namespace Application.Entities.ReadingLists.Handlers
         private readonly IReadingListRepository _readingListRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<AddReadingListCommandHandler> _logger;
 
-        public AddReadingListCommandHandler(IReadingListRepository readingListRepository, IBookRepository bookRepository, IMapper mapper)
+        public AddReadingListCommandHandler(IReadingListRepository readingListRepository, IBookRepository bookRepository, IMapper mapper,ILogger<AddReadingListCommandHandler> logger)
         {
             _readingListRepository = readingListRepository;
             _bookRepository = bookRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ReadingListDto> Handle(AddReadingListCommand request, CancellationToken cancellationToken)
@@ -29,14 +32,20 @@ namespace Application.Entities.ReadingLists.Handlers
                 UserId = request.UserId,
                 Description = request.Description,
             };
+
             foreach(var bookId in request.Books)
             {
+                _logger.LogInformation($"Retrieving book with ID {bookId.Id}");
                 var book = await _bookRepository.GetBookByIdAsync(bookId.Id);
                 if (book == null)
-                    return null; 
+                {
+                    _logger.LogError($"Book NOT FOUND with ID {bookId.Id}");
+                    return null;
+                }
                 readingList.Books.Add(book);
             }
 
+            _logger.LogInformation($"Creating reading list {readingList.Name}");
             readingList = await _readingListRepository.AddReadingListAsync(readingList);
 
             readingList.Books = readingList.Books.Select(b => new Book

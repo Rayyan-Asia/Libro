@@ -9,6 +9,7 @@ using AutoMapper;
 using Domain;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Feedbacks.Handlers
 {
@@ -18,23 +19,36 @@ namespace Application.Entities.Feedbacks.Handlers
         private readonly IBookRepository _bookRepository;
         private readonly IFeebackRepository _feedbackRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<AddFeedbackCommandHandler> _logger;
 
-        public AddFeedbackCommandHandler(IUserRepository userRepository, IBookRepository bookRepository, IFeebackRepository feedbackRepository, IMapper mapper)
+        public AddFeedbackCommandHandler(IUserRepository userRepository, IBookRepository bookRepository, IFeebackRepository feedbackRepository,
+            IMapper mapper, ILogger<AddFeedbackCommandHandler> logger)
         {
             _userRepository = userRepository;
             _bookRepository = bookRepository;
             _feedbackRepository = feedbackRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<FeedbackDto> Handle(AddFeedbackCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Retrieving user with ID {request.UserId}");
             var user = await _userRepository.GetUserByIdAsync(request.UserId);
             if ( user == null)
+            {
+                _logger.LogError($"User NOT FOUND with ID {request.UserId}");
                 return null;
+            }
+
+            _logger.LogInformation($"Retrieving book with ID {request.UserId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
+            {
+                _logger.LogError($"Book NOT FOUND with ID {request.UserId}");
                 return null;
+            }
+                
             var feedback = new Feedback()
             {
                 Rating = request.Rating,
@@ -45,7 +59,7 @@ namespace Application.Entities.Feedbacks.Handlers
                 User = user,
                 Book = book,
             };
-
+            _logger.LogInformation($"Creating feedback");
             feedback = await _feedbackRepository.AddFeedbackAsync(feedback);
             feedback.Book = new Book()
             {
