@@ -40,15 +40,19 @@ namespace Infrastructure.Repositories
 
             var count = reservations.Count;
 
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
+
             var metadata = new PaginationMetadata()
             {
                 ItemCount = count,
-                PageCount = pageNumber,
+                PageCount = pageNumber + 1,
                 PageSize = pageSize
             };
-
+            var take = pageSize - count % pageSize;
             var filteredDoctors = reservations.OrderBy(r => r.ReservationDate)
-                .Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                .Skip(pageNumber * pageSize).Take(take).ToList();
             return (metadata, filteredDoctors);
         }
 

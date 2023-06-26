@@ -60,16 +60,19 @@ namespace Infrastructure.Repositories
               .ToListAsync();
 
             var count = readingLists.Count;
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
 
             var metadata = new PaginationMetadata()
             {
                 ItemCount = count,
-                PageCount = pageNumber,
+                PageCount = pageNumber + 1,
                 PageSize = pageSize
             };
-
+            var take = pageSize - count % pageSize;
             var filteredReadingList = readingLists.Skip(pageNumber * pageSize)
-                .Take(pageSize).ToList();
+                .Take(take).ToList();
             return (metadata, filteredReadingList);
         }
 

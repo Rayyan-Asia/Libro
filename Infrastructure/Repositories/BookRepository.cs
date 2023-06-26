@@ -48,15 +48,19 @@ namespace Infrastructure.Repositories
 
             var count = books.Count;
 
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) -1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
+
             var metadata = new PaginationMetadata()
             {
                 ItemCount = count,
-                PageCount = pageNumber,
+                PageCount = pageNumber+1,
                 PageSize = pageSize
             };
-
+            var take = pageSize - count % pageSize;
             var filteredBooks = books.OrderBy(b => b.PublicationDate)
-                .Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                .Skip(pageNumber * pageSize).Take(take).ToList();
             return (metadata, filteredBooks);
         }
         public async Task<(PaginationMetadata, List<Book>)> SearchBooksAsync(string? title, string? author, string? genre, int pageNumber, int pageSize)

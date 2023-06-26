@@ -32,15 +32,19 @@ namespace Infrastructure.Repositories
 
             var count = loans.Count;
 
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
+
             var metadata = new PaginationMetadata()
             {
                 ItemCount = count,
-                PageCount = pageNumber,
+                PageCount = pageNumber + 1,
                 PageSize = pageSize
             };
-
+            var take = pageSize - count % pageSize;
             var filteredLoans = loans.OrderBy(b => b.DueDate)
-                .Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                .Skip(pageNumber * pageSize).Take(take).ToList();
             return (metadata, filteredLoans);
         }
 
