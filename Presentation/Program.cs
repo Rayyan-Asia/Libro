@@ -5,6 +5,7 @@ using AutoDependencyRegistration;
 using FluentValidation.AspNetCore;
 using Libro.Infrastructure;
 using MediatR;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -41,7 +42,10 @@ namespace Presentation
             {
                 options.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).AddXmlDataContractSerializerFormatters();
+
+            builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+
             builder.Services.AddAutoMapper(
                 typeof(Program).GetTypeInfo().Assembly,
                 typeof(UserProfile).GetTypeInfo().Assembly,
