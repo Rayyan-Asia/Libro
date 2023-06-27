@@ -2,6 +2,6 @@
 {
     public interface IBookGenreRepository
     {
-        Task RemoveGenresFromBook(int bookId);
+        Task RemoveGenresFromBookAsync(int bookId);
     }
 }

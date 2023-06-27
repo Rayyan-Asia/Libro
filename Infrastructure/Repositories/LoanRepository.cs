@@ -79,7 +79,7 @@ namespace Infrastructure.Repositories
             return count < 5;
         }
 
-        public async Task<Loan> SetLoanReturnDate(Loan loan, DateTime date)
+        public async Task<Loan> SetLoanReturnDateAsync(Loan loan, DateTime date)
         {
             loan.ReturnDate = date;
             await _context.SaveChangesAsync();
@@ -87,7 +87,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<bool> ExcuseLoan(int loanId)
+        public async Task<bool> ExcuseLoanAsync(int loanId)
         {
             var loan = await GetLoanByIdAsync(loanId);
             if (loan == null)
@@ -98,7 +98,7 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> ExcuseLoansFromUser(int userId)
+        public async Task<bool> ExcuseLoansFromUserAsync(int userId)
         {
             var loans = await _context.Loans.Where(loan => loan.UserId == userId).ToListAsync();
 

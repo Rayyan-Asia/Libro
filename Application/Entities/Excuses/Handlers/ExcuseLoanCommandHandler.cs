@@ -23,7 +23,7 @@ namespace Application.Entities.Excuses.Handlers
         public async Task<bool> Handle(ExcuseLoanCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Excusing loan with ID {request.LoanId}");
-            var result = await _loanRepository.ExcuseLoan(request.LoanId);
+            var result = await _loanRepository.ExcuseLoanAsync(request.LoanId);
             if (!result)
                 _logger.LogError($"Loan NOT FOUND with ID {request.LoanId}");
             return result;

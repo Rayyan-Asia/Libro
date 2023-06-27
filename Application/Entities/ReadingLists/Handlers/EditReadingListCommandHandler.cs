@@ -42,7 +42,7 @@ namespace Application.Entities.ReadingLists.Handlers
             }
 
             _logger.LogInformation($"Clearing books from reading list with ID {readingList.Id}");
-            await _readingListBookRepository.RemoveBooksFromReadingList(readingList.Id);
+            await _readingListBookRepository.RemoveBooksFromReadingListAsync(readingList.Id);
 
             if (request.Books.Count() < 1) return null;
             foreach (var Book in request.Books)

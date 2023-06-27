@@ -2,6 +2,6 @@
 {
     public interface IReadingListBookRepository
     {
-        Task RemoveBooksFromReadingList(int listId);
+        Task RemoveBooksFromReadingListAsync(int listId);
     }
 }

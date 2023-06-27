@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task RemoveGenresFromBook(int bookId)
+        public async Task RemoveGenresFromBookAsync(int bookId)
         {
             var listToRemove = await _context.BookGenres.Where(ba => ba.BookId == bookId).ToListAsync();
             _context.BookGenres.RemoveRange(listToRemove);

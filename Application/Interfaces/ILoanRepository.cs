@@ -14,11 +14,11 @@ namespace Application.Interfaces
         Task<(PaginationMetadata, List<Loan>)> GetAllLoansAsync(int pageNumber, int pageSize);
         Task<(PaginationMetadata, List<Loan>)> GetAllLoansByUserIdAsync(int pageNumber, int pageSize, int userId);
         Task<bool> IsPatronEligableForLoanAsync(int userId);
-        Task<Loan> SetLoanReturnDate(Loan loan, DateTime date);
+        Task<Loan> SetLoanReturnDateAsync(Loan loan, DateTime date);
 
-        Task<bool> ExcuseLoan(int loanId);
+        Task<bool> ExcuseLoanAsync(int loanId);
 
-        Task<bool> ExcuseLoansFromUser(int userId);
+        Task<bool> ExcuseLoansFromUserAsync(int userId);
 
 
     }

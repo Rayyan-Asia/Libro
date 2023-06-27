@@ -58,9 +58,9 @@ namespace Application.Entities.Returns.Handlers
                 return null;
             }
             _logger.LogInformation($"Returning book with ID {book.Id}");
-            await _loanRepository.SetLoanReturnDate(loan, bookReturn.ReturnDate);
+            await _loanRepository.SetLoanReturnDateAsync(loan, bookReturn.ReturnDate);
             await _bookRepository.ChangeBookAsAvailableAsync(book);
-            bookReturn = await _bookReturnRepository.SetBookReturnApproved(bookReturn);
+            bookReturn = await _bookReturnRepository.SetBookReturnApprovedAsync(bookReturn);
             var returnDto = _mapper.Map<BookReturnDto>(bookReturn);
             return returnDto;
 

@@ -41,7 +41,7 @@ namespace Application.Entities.Authors.Handlers
             }
 
             _logger.LogInformation($"Clearing Books from author {author.Id}");
-            await _bookAuthorRepository.RemoveBooksFromAuthor(author.Id);
+            await _bookAuthorRepository.RemoveBooksFromAuthorAsync(author.Id);
 
             if (request.Books.Count() < 1) return null;
             foreach (var Book in request.Books)

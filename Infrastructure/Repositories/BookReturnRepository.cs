@@ -72,7 +72,7 @@ namespace Infrastructure.Repositories
             return await _context.BookReturns.SingleOrDefaultAsync(b => b.LoanId == loanId && b.IsApproved == false);
         }
 
-        public async Task<BookReturn> SetBookReturnApproved(BookReturn bookReturn)
+        public async Task<BookReturn> SetBookReturnApprovedAsync(BookReturn bookReturn)
         {
             bookReturn.IsApproved = true;
             await _context.SaveChangesAsync();

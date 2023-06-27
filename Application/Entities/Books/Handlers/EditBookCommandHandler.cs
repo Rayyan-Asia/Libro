@@ -51,13 +51,13 @@ namespace Application.Entities.Books.Handlers
             // Make a copy of the authors collection to avoid modifying it while iterating
             book.Authors.Clear();
             _logger.LogInformation($"Clearing authors from book with ID {book.Id}");
-            await _bookAuthorRepository.RemoveAuthorsFromBook(book.Id);
+            await _bookAuthorRepository.RemoveAuthorsFromBookAsync(book.Id);
             await AddAuthors(request.Authors, book);
 
             // Make a copy of the genres collection to avoid modifying it while iterating
             book.Genres.Clear();
             _logger.LogInformation($"Clearing genres from book with ID {book.Id}");
-            await _bookGenreRepository.RemoveGenresFromBook(book.Id);
+            await _bookGenreRepository.RemoveGenresFromBookAsync(book.Id);
             await AddGenres(request.Genres, book);
 
             _logger.LogInformation($"Updating book with Id {book.Id}");

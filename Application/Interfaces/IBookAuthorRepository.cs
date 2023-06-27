@@ -9,8 +9,8 @@ namespace Application.Interfaces
 {
     public interface IBookAuthorRepository
     {
-        Task RemoveAuthorsFromBook(int bookId);
-        Task RemoveBooksFromAuthor(int authorId);
+        Task RemoveAuthorsFromBookAsync(int bookId);
+        Task RemoveBooksFromAuthorAsync(int authorId);
         Task<int> GetBookAuthorsCountAsync(int bookId);
         Task<List<BookAuthor>> GetAuthorBooksAsync(int authorId);
     }

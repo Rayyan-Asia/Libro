@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task RemoveBooksFromReadingList(int listId)
+        public async Task RemoveBooksFromReadingListAsync(int listId)
         {
             var list = await _context.ReadingListBooks.Where(l => l.ReadingListId == listId).ToListAsync();
             _context.ReadingListBooks.RemoveRange(list);

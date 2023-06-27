@@ -15,6 +15,6 @@ namespace Application.Interfaces
         Task<(PaginationMetadata, List<BookReturn>)> GetAllReturnsByUserIdAsync(int pageNumber, int pageSize, int userId);
         Task<BookReturn?> ApproveReturnByIdAsync(int ReturnId);
         Task<BookReturn?> GetReturnByLoanIdAsync(int loanId);
-        Task<BookReturn> SetBookReturnApproved(BookReturn bookReturn);
+        Task<BookReturn> SetBookReturnApprovedAsync(BookReturn bookReturn);
     }
 }

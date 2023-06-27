@@ -18,14 +18,14 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task RemoveAuthorsFromBook(int bookId)
+        public async Task RemoveAuthorsFromBookAsync(int bookId)
         {
             var listToRemove = await _context.BookAuthors.Where(ba => ba.BookId == bookId).ToListAsync();
             _context.BookAuthors.RemoveRange(listToRemove);
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveBooksFromAuthor(int authorId)
+        public async Task RemoveBooksFromAuthorAsync(int authorId)
         {
             var listToRemove = await _context.BookAuthors.Where(ba => ba.AuthorId == authorId).ToListAsync();
             _context.BookAuthors.RemoveRange(listToRemove);
