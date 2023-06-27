@@ -40,7 +40,7 @@ namespace Application.Entities.Reservations.Handlers
                 return null;
             }
             _logger.LogInformation($"Checking eligablilty of user with ID {request.UserId}");
-            if (await _reservationRepository.IsPatronEligableForReservationAsync(request.UserId))
+            if (!await _reservationRepository.IsPatronEligableForReservationAsync(request.UserId))
             {
                 _logger.LogError($"User NOT ELIGABLE with ID {request.UserId}");
                 return null;

@@ -28,7 +28,7 @@ namespace Application.DTOs
 
         [Required]
         public Role Role { get; set; } = Role.Patron;
-        public List<Loan> Loans { get; set; }
-        public List<Reservation> Reservations { get; set; }
+        public List<LoanDto> Loans { get; set; }
+        public List<ReservationDto> Reservations { get; set; }
     }
 }

@@ -17,6 +17,5 @@ namespace Application.DTOs
         [EmailAddress]
         public string Email { get; set; }
 
-
     }
 }

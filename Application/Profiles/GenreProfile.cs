@@ -10,6 +10,7 @@ namespace Application.Profiles
         {
             CreateMap<Genre, IdDto>();
             CreateMap<IdDto, Genre>();
+            CreateMap<Genre, GenreDto>();
         }
     }
 }

@@ -24,9 +24,9 @@ namespace Application.DTOs
         [Required]
         public DateTime PublicationDate { get; set; }
 
-        public List<Genre> Genres { get; set; }
+        public List<GenreDto> Genres { get; set; }
 
-        public List<Author> Authors { get; set; }
+        public List<AuthorDto> Authors { get; set; }
         public bool IsAvailable { get; set; } = true;
     }
 }
