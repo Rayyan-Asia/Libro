@@ -28,6 +28,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Reservation> AddReservationAsync(Reservation reservation)
         {
+            _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
             return reservation;
         }
