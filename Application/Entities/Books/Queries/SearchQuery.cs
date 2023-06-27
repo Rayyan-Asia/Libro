@@ -11,8 +11,13 @@ namespace Application.Entities.Books.Queries
 {
     public class SearchQuery : IRequest<(PaginationMetadata, List<BookDto>)>
     {
+        [MaxLength(100)]
         public string Title { get; set; }
+        
+        [MaxLength(32)]
         public string Author { get; set; }
+
+        [MaxLength(32)]
         public string Genre { get; set; }
 
         [Range(0, 5)]
