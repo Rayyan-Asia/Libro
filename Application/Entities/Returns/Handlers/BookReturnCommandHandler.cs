@@ -6,10 +6,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Returns.Handlers
 {
-    public class BookReturnCommandHandler : IRequestHandler<BookReturnCommand, BookReturnDto>
+    public class BookReturnCommandHandler : IRequestHandler<BookReturnCommand, IActionResult>
     {
         private readonly IBookReturnRepository _bookReturnRepository;
         private readonly ILoanRepository _loanRepository;
@@ -24,27 +25,27 @@ namespace Application.Entities.Returns.Handlers
             _logger = logger;
         }
 
-        public async Task<BookReturnDto> Handle(BookReturnCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(BookReturnCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving loan with ID {request.LoanId}");
             var loan = await _loanRepository.GetLoanByIdAsync(request.LoanId);
             if (loan == null)
             {
                 _logger.LogError($"Loan NOT FOUND with ID {request.LoanId}");
-                return null;
+                return new NotFoundObjectResult("Loan not found with ID " + request.LoanId);
             }
 
             if (loan.UserId != request.UserId)
             {
                 _logger.LogError($"User IS NOT THE OWNER of the loan with ID {loan.Id}");
-                return null;
+                return new ForbidResult("User is not the owner of the loan with ID " + loan.Id);
             }
 
             _logger.LogInformation($"Retrieving loan with ID {loan.Id}");
-            if (await _bookReturnRepository.GetReturnByLoanIdAsync(loan.Id) != null) // makes sure the user make another return on the same loan.
+            if (await _bookReturnRepository.GetReturnByLoanIdAsync(loan.Id) != null)
             {
                 _logger.LogError($"User making another return on the same loan with ID {loan.Id}");
-                return null; 
+                return new BadRequestObjectResult("User is making another return on the same loan with ID " + loan.Id);
             }
 
             var bookReturn = new BookReturn
@@ -56,9 +57,7 @@ namespace Application.Entities.Returns.Handlers
 
             _logger.LogInformation($"Adding book return");
             bookReturn = await _bookReturnRepository.AddReturnAsync(bookReturn);
-
-            var bookReturnDto = _mapper.Map<BookReturnDto>(bookReturn);
-            return bookReturnDto;
+            return new OkObjectResult(_mapper.Map<BookReturnDto>(bookReturn));
         }
     }
 }

@@ -4,11 +4,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.ReadingLists.Handlers
 {
-    public class EditReadingListCommandHandler : IRequestHandler<EditReadingListCommand, ReadingListDto>
+    public class EditReadingListCommandHandler : IRequestHandler<EditReadingListCommand, IActionResult>
     {
         private readonly IReadingListRepository _readingListRepository;
         private readonly IBookRepository _bookRepository;
@@ -26,25 +27,27 @@ namespace Application.Entities.ReadingLists.Handlers
             _logger = logger;
         }
 
-        public async Task<ReadingListDto> Handle(EditReadingListCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(EditReadingListCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving reading list with ID {request.Id}");
             var readingList = await _readingListRepository.GetReadingListAsync(request.Id);
             if (readingList == null)
             {
                 _logger.LogError($"Reading list NOT FOUND with ID {request.Id}");
-                return null;
+                return new NotFoundObjectResult("Reading list not found with ID " + request.Id);
             }
             if (request.UserId != readingList.UserId)
             {
-                _logger.LogError($"User owner of reading list with ID {request.Id}");
-                return null;
+                _logger.LogError($"User does not own reading list with ID {request.Id}");
+                return new ForbidResult($"User does not own reading list with ID {request.Id}"); // Or you can return a ForbiddenResult
             }
 
             _logger.LogInformation($"Clearing books from reading list with ID {readingList.Id}");
             await _readingListBookRepository.RemoveBooksFromReadingListAsync(readingList.Id);
 
-            if (request.Books.Count() < 1) return null;
+            if (request.Books.Count() < 1)
+                return new BadRequestObjectResult("At least one book should be provided.");
+
             foreach (var Book in request.Books)
             {
                 _logger.LogInformation($"Retrieving book with ID {Book.Id}");
@@ -52,12 +55,10 @@ namespace Application.Entities.ReadingLists.Handlers
                 if (book == null)
                 {
                     _logger.LogError($"Book NOT FOUND with ID {Book.Id}");
-                    return null;
+                    return new NotFoundObjectResult("Book not found with ID " + Book.Id);
                 }
                 readingList.Books.Add(book);
             }
-
-
 
             readingList.CreationDate = DateTime.Now;
             readingList.Name = request.Name;
@@ -75,7 +76,8 @@ namespace Application.Entities.ReadingLists.Handlers
                 PublicationDate = b.PublicationDate,
             }).ToList();
 
-            return _mapper.Map<ReadingListDto>(readingList);
+            return new OkObjectResult(_mapper.Map<ReadingListDto>(readingList));
         }
+
     }
 }

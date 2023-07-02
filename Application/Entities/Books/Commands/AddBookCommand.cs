@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Commands
 {
-    public class AddBookCommand : IRequest<BookDto>
+    public class AddBookCommand : IRequest<IActionResult>
     {
         [MaxLength(100)]
         [Required]

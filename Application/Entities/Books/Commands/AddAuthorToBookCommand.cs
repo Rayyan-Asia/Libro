@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Commands
 {
-    public class AddAuthorToBookCommand : IRequest<BookDto>
+    public class AddAuthorToBookCommand : IRequest<IActionResult>
     {
         [Required]
         public int BookId {get; set;}

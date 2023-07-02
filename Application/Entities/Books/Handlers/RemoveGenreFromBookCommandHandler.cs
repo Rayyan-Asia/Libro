@@ -10,10 +10,11 @@ using Application.Interfaces;
 using MediatR;
 using Domain;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class RemoveGenreFromBookCommandHandler : IRequestHandler<RemoveGenreFromBookCommand, BookDto>
+    public class RemoveGenreFromBookCommandHandler : IRequestHandler<RemoveGenreFromBookCommand, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IGenreRepository _genreRepository;
@@ -28,14 +29,14 @@ namespace Application.Entities.Books.Handlers
             _logger = logger;
         }
 
-        public async Task<BookDto> Handle(RemoveGenreFromBookCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(RemoveGenreFromBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving Book with ID {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book not found with ID {request.BookId}");
-                return null;
+                return new NotFoundObjectResult($"Book not found with ID {request.BookId}"); // Return a 404 Not Found response
             }
 
             _logger.LogInformation($"Retrieving genre with Id {request.GenreId}");
@@ -43,20 +44,20 @@ namespace Application.Entities.Books.Handlers
             if (genre == null)
             {
                 _logger.LogError($"Genre not found with ID {request.GenreId}");
-                return null;
+                return new NotFoundObjectResult($"Genre not found with ID {request.GenreId}"); // Return a 404 Not Found response
             }
-                
+
             if (!book.Genres.Any(g => g.Id == genre.Id))
-                return null;
+                return new BadRequestObjectResult($"Genre with ID {genre.Id} is not associated with this book"); // Return a 404 Not Found response
             if (book.Genres.Count() <= 1)
-                return null;
+                return new BadRequestObjectResult("Book Cannot remove its only genre"); // Return a 400 Bad Request response
 
             book.Genres.Remove(genre);
             _logger.LogInformation($"Updating book with Id {book.Id}");
             await _bookRepository.UpdateBookAsync(book);
 
             var bookDto = _mapper.Map<BookDto>(book);
-            return bookDto;
+            return new OkObjectResult(bookDto); // Return a 200 OK response with the updated book data
         }
     }
 }

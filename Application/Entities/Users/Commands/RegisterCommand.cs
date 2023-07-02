@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Domain;
 using MediatR;
 using Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Users.Commands
 {
-    public class RegisterCommand : IRequest<AuthenticationResponse>
+    public class RegisterCommand : IRequest<IActionResult>
     {
         [Required]
         [MaxLength(32)]

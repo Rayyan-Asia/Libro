@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Users.Queries
 {
-    public class LoginQuery : IRequest<AuthenticationResponse>
+    public class LoginQuery : IRequest<IActionResult>
     {
         [Required]
         [EmailAddress]

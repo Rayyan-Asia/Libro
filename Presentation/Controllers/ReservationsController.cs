@@ -48,9 +48,7 @@ namespace Presentation.Controllers
                         {
                             return BadRequest(validationResult.Errors);
                         }
-                        var result = await _mediator.Send(request);
-                        if (result == null) return BadRequest();
-                        return Ok(result);
+                        return await _mediator.Send(request);
                     }
                 }
             }
@@ -78,9 +76,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(request);
-            if (result == null) return BadRequest();
-            return Ok(result);
+            return await _mediator.Send(request);
         }
 
     }

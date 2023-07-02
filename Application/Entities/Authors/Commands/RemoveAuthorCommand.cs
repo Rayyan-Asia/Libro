@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Authors.Commands
 {
-    public class RemoveAuthorCommand : IRequest<bool>
+    public class RemoveAuthorCommand : IRequest<IActionResult>
     {
         [Required]
         public int Id { get; set; }

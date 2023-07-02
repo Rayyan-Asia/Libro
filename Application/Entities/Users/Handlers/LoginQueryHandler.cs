@@ -5,10 +5,11 @@ using Application.Entities.Users.Queries;
 using Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Users.Handlers
 {
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, AuthenticationResponse>
+    public class LoginQueryHandler : IRequestHandler<LoginQuery, IActionResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -23,14 +24,14 @@ namespace Application.Entities.Users.Handlers
             _configuration = configuration;
             _logger = logger;
         }
-        public async Task<AuthenticationResponse> Handle(LoginQuery request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving user by email {request.Email}");
             var user = await _userRepository.GetUserByEmailAsync(request.Email);
             if (user == null)
             {
                 _logger.LogError($"User NOT FOUND with email {request.Email}");
-                return null;
+                return new NotFoundObjectResult("User not found with email " + request.Email);
             }
             var isVerified = PasswordHasher.VerifyPassword(request.Password, user.Salt, user.HashedPassword);
             var jwt = JwtService.GenerateJwt(user, _configuration);
@@ -38,10 +39,11 @@ namespace Application.Entities.Users.Handlers
             if (isVerified)
             {
                 var userDto = _mapper.Map<UserDto>(user);
-                return new AuthenticationResponse() { UserDto = userDto, Jwt = jwt };
+                var authenticationResponse = new AuthenticationResponse() { UserDto = userDto, Jwt = jwt };
+                return new OkObjectResult(authenticationResponse);
             }
             _logger.LogError($"User entered wrong password");
-            return null;
+            return new BadRequestObjectResult("User entered wrong password");
         }
 
 

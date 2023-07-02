@@ -86,10 +86,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(addFeedbackCommand);
-                    if (result == null)
-                        return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(addFeedbackCommand);
                 }
             }
             return Unauthorized();
@@ -111,10 +108,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(editFeedbackCommand);
-                    if (result == null)
-                        return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(editFeedbackCommand);
                 }
             }
             return Unauthorized();
@@ -136,10 +130,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(removeFeedbackCommand);
-                    if (!result)
-                        return BadRequest();
-                    return Ok();
+                    return await _mediator.Send(removeFeedbackCommand);
                 }
             }
             return Unauthorized();

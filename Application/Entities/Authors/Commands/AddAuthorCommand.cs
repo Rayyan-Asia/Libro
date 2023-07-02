@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Authors.Commands
 {
-    public class AddAuthorCommand : IRequest<AuthorDto>
+    public class AddAuthorCommand : IRequest<IActionResult>
     {
         
         [Required]

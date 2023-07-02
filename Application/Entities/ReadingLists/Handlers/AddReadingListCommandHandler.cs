@@ -5,10 +5,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.ReadingLists.Handlers
 {
-    public class AddReadingListCommandHandler : IRequestHandler<AddReadingListCommand, ReadingListDto>
+    public class AddReadingListCommandHandler : IRequestHandler<AddReadingListCommand, IActionResult>
     {
         private readonly IReadingListRepository _readingListRepository;
         private readonly IBookRepository _bookRepository;
@@ -23,7 +24,7 @@ namespace Application.Entities.ReadingLists.Handlers
             _logger = logger;
         }
 
-        public async Task<ReadingListDto> Handle(AddReadingListCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddReadingListCommand request, CancellationToken cancellationToken)
         {
             var readingList = new ReadingList()
             {
@@ -33,14 +34,14 @@ namespace Application.Entities.ReadingLists.Handlers
                 Description = request.Description,
             };
 
-            foreach(var bookId in request.Books)
+            foreach (var bookId in request.Books)
             {
                 _logger.LogInformation($"Retrieving book with ID {bookId.Id}");
                 var book = await _bookRepository.GetBookByIdAsync(bookId.Id);
                 if (book == null)
                 {
                     _logger.LogError($"Book NOT FOUND with ID {bookId.Id}");
-                    return null;
+                    return new NotFoundObjectResult("Book not found with ID " + bookId.Id);
                 }
                 readingList.Books.Add(book);
             }
@@ -56,7 +57,7 @@ namespace Application.Entities.ReadingLists.Handlers
                 PublicationDate = b.PublicationDate,
             }).ToList();
 
-            return _mapper.Map<ReadingListDto>(readingList);
+            return new OkObjectResult(_mapper.Map<ReadingListDto>(readingList));
         }
     }
 }

@@ -9,11 +9,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 namespace Application.Entities.Users.Handlers
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthenticationResponse>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IActionResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -28,14 +29,14 @@ namespace Application.Entities.Users.Handlers
             _logger = logger;
         }
 
-        public async Task<AuthenticationResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Checking if other user with same email exists with email : {request.Email}");
+            _logger.LogInformation($"Checking if other user with the same email exists with email: {request.Email}");
             var user = await _userRepository.GetUserByEmailAsync(request.Email);
             if (user != null)
             {
                 _logger.LogError($"User FOUND with email {request.Email}");
-                return null;
+                return new BadRequestObjectResult("User with the same email already exists.");
             }
 
             var newUser = new User { Email = request.Email, PhoneNumber = request.PhoneNumber, Name = request.Name };
@@ -48,7 +49,7 @@ namespace Application.Entities.Users.Handlers
             var registeredUserDto = _mapper.Map<UserDto>(registeredUser);
             var jwt = JwtService.GenerateJwt(registeredUser, _configuration);
 
-            return new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto };
+            return new OkObjectResult(new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto });
         }
     }
 }

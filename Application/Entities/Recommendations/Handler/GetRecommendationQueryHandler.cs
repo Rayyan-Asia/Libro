@@ -3,11 +3,12 @@ using Application.Entities.Recommendations.Query;
 using Application.Interfaces;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Recommendations.Handler
 {
-    public class GetRecommendationQueryHandler : IRequestHandler<GetRecommendationQuery, BookDto>
+    public class GetRecommendationQueryHandler : IRequestHandler<GetRecommendationQuery, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
@@ -20,11 +21,11 @@ namespace Application.Entities.Recommendations.Handler
             _logger = logger;
         }
 
-        public async Task<BookDto> Handle(GetRecommendationQuery request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(GetRecommendationQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving book recommendation for user with ID {request.UserId}");
             var result = await _bookRepository.GetRecommendedBookAsync(request.UserId);
-            return _mapper.Map<BookDto>(result);
+            return new OkObjectResult(_mapper.Map<BookDto>(result));
         }
     }
 }

@@ -9,11 +9,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Authors.Handlers
 {
-    public class AddAuthorCommandHandler : IRequestHandler<AddAuthorCommand,AuthorDto>
+    public class AddAuthorCommandHandler : IRequestHandler<AddAuthorCommand,IActionResult>
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IBookRepository _bookRepository;
@@ -29,35 +30,32 @@ namespace Application.Entities.Authors.Handlers
             _logger = logger;
         }
 
-        public async Task<AuthorDto> Handle(AddAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddAuthorCommand request, CancellationToken cancellationToken)
         {
             var author = new Author();
-            if (request.Books.Count() < 1) return null;
-            foreach(var Book in request.Books)
+            foreach (var bookRequest in request.Books)
             {
-                _logger.LogInformation($"Book with id {Book.Id} being retrieved");
-                var book = await _bookRepository.GetBookByIdAsync(Book.Id);
+                _logger.LogInformation($"Book with id {bookRequest.Id} being retrieved");
+                var book = await _bookRepository.GetBookByIdAsync(bookRequest.Id);
                 if (book == null)
                 {
-                    _logger.LogError($"Book with id {Book.Id} not found!!");
-                    return null;
+                    _logger.LogError($"Book with id {bookRequest.Id} not found!!");
+                    // Return NotFoundObjectResult if any book in the request is not found.
+                    return new NotFoundObjectResult($"Book with id {bookRequest.Id} not found.");
                 }
-                    
+
                 author.Books.Add(book);
             }
+
             author.Name = request.Name;
             author.Description = request.Description;
 
-            author  = await _authorRepository.AddAuthorAsync(author);
+            author = await _authorRepository.AddAuthorAsync(author);
             _logger.LogInformation($"Author: {author.Name} added");
-            author.Books = author.Books.Select(b => new Book
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Description = b.Description,
-                PublicationDate = b.PublicationDate,
-            }).ToList();
-            return _mapper.Map<AuthorDto>(author);
+
+            // Map the Author entity to AuthorDto and return as OkObjectResult.
+            var authorDto = _mapper.Map<AuthorDto>(author);
+            return new OkObjectResult(authorDto);
         }
     }
 }

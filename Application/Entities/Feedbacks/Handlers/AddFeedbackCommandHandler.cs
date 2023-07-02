@@ -10,10 +10,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Feedbacks.Handlers
 {
-    public class AddFeedbackCommandHandler : IRequestHandler<AddFeedbackCommand, FeedbackDto>
+    public class AddFeedbackCommandHandler : IRequestHandler<AddFeedbackCommand, IActionResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IBookRepository _bookRepository;
@@ -31,24 +32,24 @@ namespace Application.Entities.Feedbacks.Handlers
             _logger = logger;
         }
 
-        public async Task<FeedbackDto> Handle(AddFeedbackCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddFeedbackCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving user with ID {request.UserId}");
             var user = await _userRepository.GetUserByIdAsync(request.UserId);
-            if ( user == null)
+            if (user == null)
             {
                 _logger.LogError($"User NOT FOUND with ID {request.UserId}");
-                return null;
+                return new NotFoundObjectResult($"User NOT FOUND with ID {request.UserId}"); // Return a 404 Not Found response
             }
 
-            _logger.LogInformation($"Retrieving book with ID {request.UserId}");
+            _logger.LogInformation($"Retrieving book with ID {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
-                _logger.LogError($"Book NOT FOUND with ID {request.UserId}");
-                return null;
+                _logger.LogError($"Book NOT FOUND with ID {request.BookId}");
+                return new NotFoundObjectResult($"Book NOT FOUND with ID {request.BookId}"); // Return a 404 Not Found response
             }
-                
+
             var feedback = new Feedback()
             {
                 Rating = request.Rating,
@@ -61,12 +62,25 @@ namespace Application.Entities.Feedbacks.Handlers
             };
             _logger.LogInformation($"Creating feedback");
             feedback = await _feedbackRepository.AddFeedbackAsync(feedback);
-            feedback.Book = new Book()
+
+            // Create a simplified version of the book for the response
+            var simplifiedBook = new BookDto()
             {
                 Id = feedback.Book.Id,
                 Title = feedback.Book.Title,
             };
-            return _mapper.Map<FeedbackDto> (feedback);
+
+            var feedbackDto = new FeedbackDto()
+            {
+                Id = feedback.Id,
+                Rating = feedback.Rating,
+                CreatedDate = feedback.CreatedDate,
+                Review = feedback.Review,
+                User = _mapper.Map<UserDto>(user),
+                Book = simplifiedBook,
+            };
+
+            return new OkObjectResult(feedbackDto); // Return a 200 OK response with the created feedback data
         }
     }
 }

@@ -10,10 +10,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Reservations.Handlers
 {
-    public class ApproveReservationCommandHandler : IRequestHandler<ApproveReservationCommand, LoanDto>
+    public class ApproveReservationCommandHandler : IRequestHandler<ApproveReservationCommand, IActionResult>
     {
         private readonly IMapper _mapper;
         private readonly ILoanRepository _loanRepository;
@@ -31,7 +32,7 @@ namespace Application.Entities.Reservations.Handlers
             _logger = logger;
         }
 
-        public async Task<LoanDto> Handle(ApproveReservationCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(ApproveReservationCommand request, CancellationToken cancellationToken)
         {
             int reservationId = request.ReservationId;
             _logger.LogInformation($"Retrieving reservation with ID {reservationId}");
@@ -39,16 +40,19 @@ namespace Application.Entities.Reservations.Handlers
             if (reservation == null)
             {
                 _logger.LogError($"Reservation NOT FOUND with ID {reservationId}");
-                return null;
+                return new NotFoundObjectResult("Reservation not found with ID " + reservationId);
             }
-            _logger.LogInformation($"Checking if user with ID {reservation.UserId} is eligable for reservation");
+
+            _logger.LogInformation($"Checking if user with ID {reservation.UserId} is eligible for reservation");
             if (!await _loanRepository.IsPatronEligableForLoanAsync(reservation.UserId))
             {
-                _logger.LogError($"Resejected reservation with ID {reservationId}");
+                _logger.LogError($"Rejected reservation with ID {reservationId}");
                 await _reservationRepository.RejectReservationByIdAsync(reservationId);
+
                 var book = await _bookRepository.GetBookByIdAsync(reservation.BookId);
                 await _bookRepository.ChangeBookAsAvailableAsync(book);
-                return null;
+
+                return new NotFoundObjectResult("User is not eligible for the loan.");
             }
 
             Loan loan = new Loan()
@@ -62,8 +66,7 @@ namespace Application.Entities.Reservations.Handlers
             _logger.LogInformation($"Adding loan from reservation with Id {reservationId}");
             loan = await _loanRepository.AddLoanAsync(loan);
 
-            var result = _mapper.Map<LoanDto>(loan);
-            return result;
+            return new OkObjectResult(_mapper.Map<LoanDto>(loan));
         }
     }
 }

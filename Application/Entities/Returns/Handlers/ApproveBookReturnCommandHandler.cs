@@ -9,10 +9,11 @@ using AutoMapper;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Returns.Handlers
 {
-    public class ApproveBookReturnCommandHandler : IRequestHandler<ApproveBookReturnCommand, BookReturnDto>
+    public class ApproveBookReturnCommandHandler : IRequestHandler<ApproveBookReturnCommand, IActionResult>
     {
         private readonly IBookReturnRepository _bookReturnRepository;
         private readonly ILoanRepository _loanRepository;
@@ -30,40 +31,39 @@ namespace Application.Entities.Returns.Handlers
             _logger = logger;
         }
 
-        public async Task<BookReturnDto> Handle(ApproveBookReturnCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(ApproveBookReturnCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving book return with ID {request.BookReturnId}");
             var bookReturn = await _bookReturnRepository.GetReturnByIdAsync(request.BookReturnId);
-            if(bookReturn == null ) {
+            if (bookReturn == null)
+            {
                 _logger.LogError($"Book return NOT FOUND with ID {request.BookReturnId}");
-                return null;
+                return new NotFoundObjectResult("Book return not found with ID " + request.BookReturnId);
             }
             if (bookReturn.IsApproved)
             {
                 _logger.LogError($"Book return ALREADY APPROVED with ID {request.BookReturnId}");
-                return null;
+                return new BadRequestObjectResult("Book return is already approved.");
             }
-            _logger.LogInformation($"Retrieving book return with ID {bookReturn.LoanId}");
+            _logger.LogInformation($"Retrieving loan with ID {bookReturn.LoanId}");
             var loan = await _loanRepository.GetLoanByIdAsync(bookReturn.LoanId);
-            if(loan == null)
+            if (loan == null)
             {
                 _logger.LogError($"Loan NOT FOUND with ID {bookReturn.LoanId}");
-                return null;
+                return new NotFoundObjectResult("Loan not found with ID " + bookReturn.LoanId);
             }
             _logger.LogInformation($"Retrieving book with ID {loan.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(loan.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book NOT FOUND with ID {loan.BookId}");
-                return null;
+                return new NotFoundObjectResult("Book not found with ID " + loan.BookId);
             }
             _logger.LogInformation($"Returning book with ID {book.Id}");
             await _loanRepository.SetLoanReturnDateAsync(loan, bookReturn.ReturnDate);
             await _bookRepository.ChangeBookAsAvailableAsync(book);
             bookReturn = await _bookReturnRepository.SetBookReturnApprovedAsync(bookReturn);
-            var returnDto = _mapper.Map<BookReturnDto>(bookReturn);
-            return returnDto;
-
+            return new OkObjectResult(_mapper.Map<BookReturnDto>(bookReturn));
         }
     }
 }

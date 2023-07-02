@@ -39,12 +39,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(excuseLoanCommand);
-            if (!result)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            return await _mediator.Send(excuseLoanCommand); 
         }
 
 
@@ -61,12 +56,8 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(excuseUserCommand);
-            if (!result)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            return await _mediator.Send(excuseUserCommand);
+
         }
     }
 }

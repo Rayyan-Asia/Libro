@@ -81,9 +81,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(addReadingListCommand);
-                    if (result == null) return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(addReadingListCommand);
                 }
             }
             return Unauthorized();
@@ -107,9 +105,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(editReadingListCommand);
-                    if (result == null) return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(editReadingListCommand);
                 }
             }
             return Unauthorized();
@@ -132,9 +128,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(removeReadingListCommand);
-                    if (!result) return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(removeReadingListCommand);
                 }
             }
             return Unauthorized();
@@ -156,9 +150,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(addBookToReadingListCommand);
-                    if (result == null) return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(addBookToReadingListCommand);
                 }
             }
             return Unauthorized();
@@ -179,9 +171,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(removeBookFromReadingList);
-                    if (result == null) return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(removeBookFromReadingList);
                 }
             }
             return Unauthorized();

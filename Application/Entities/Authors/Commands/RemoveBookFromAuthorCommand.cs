@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Authors.Commands
 {
-    public class RemoveBookFromAuthorCommand : IRequest<AuthorDto>
+    public class RemoveBookFromAuthorCommand : IRequest<IActionResult>
     {
         [Required]
         public int AuthorId { get; set; }

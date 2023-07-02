@@ -5,10 +5,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class AddBookCommandHandler : IRequestHandler<AddBookCommand, BookDto>
+    public class AddBookCommandHandler : IRequestHandler<AddBookCommand, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
@@ -25,13 +26,17 @@ namespace Application.Entities.Books.Handlers
             _mapper = mapper;
             _logger = logger;
         }
-
-        public async Task<BookDto> Handle(AddBookCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
-            if (!await HasValidIds(request)) return null;
+            if (!await HasValidIds(request))
+            {
+                return new BadRequestObjectResult("Invalid IDs provided in the request.");
+            }
 
-            if(request.Authors.Count() <1 || request.Genres.Count() < 1)
-                return null;
+            if (request.Authors.Count() < 1 || request.Genres.Count() < 1)
+            {
+                return new BadRequestObjectResult("At least one author and one genre are required for a book.");
+            }
 
             var book = new Book()
             {
@@ -46,10 +51,10 @@ namespace Application.Entities.Books.Handlers
             await AddAuthorsToBook(request.Authors, book);
             await AddGenresToBook(request.Genres, book);
 
-            _logger.LogInformation($"Updating book with Id {book.Id} with books");
+            _logger.LogInformation($"Updating book with Id {book.Id} with authors and genres");
             book = await _bookRepository.UpdateBookAsync(book);
 
-            return _mapper.Map<BookDto>(book);
+            return new OkObjectResult(_mapper.Map<BookDto>(book));
         }
 
         private async Task AddGenresToBook(List<IdDto> genres, Book book)

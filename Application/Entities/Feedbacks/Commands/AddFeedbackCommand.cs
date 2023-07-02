@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Feedbacks.Commands
 {
-    public class AddFeedbackCommand : IRequest<FeedbackDto>
+    public class AddFeedbackCommand : IRequest<IActionResult>
     {
         [Required]
         public Rating Rating { get; set; }

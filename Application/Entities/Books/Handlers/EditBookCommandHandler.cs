@@ -5,10 +5,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class EditBookCommandHandler : IRequestHandler<EditBookCommand, BookDto>
+    public class EditBookCommandHandler : IRequestHandler<EditBookCommand, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
@@ -30,19 +31,18 @@ namespace Application.Entities.Books.Handlers
             _logger = logger;
         }
 
-        public async Task<BookDto> Handle(EditBookCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(EditBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving Book with Id {request.Id}");
             var book = await _bookRepository.GetBookByIdAsync(request.Id);
             if (book == null)
             {
                 _logger.LogError($"Book not found with ID {request.Id}");
-                return null;
+                return new NotFoundObjectResult($"Book not found with ID {request.Id}"); // Return a 404 Not Found response
             }
-                
 
             if (!await HasValidIds(request))
-                return null;
+                return new BadRequestObjectResult("IDs were not valid"); // Return a 400 Bad Request response
 
             book.Title = request.Title;
             book.Description = request.Description;
@@ -63,7 +63,8 @@ namespace Application.Entities.Books.Handlers
             _logger.LogInformation($"Updating book with Id {book.Id}");
             await _bookRepository.UpdateBookAsync(book);
 
-            return _mapper.Map<BookDto>(book);
+            var bookDto = _mapper.Map<BookDto>(book);
+            return new OkObjectResult (bookDto); // Return a 200 OK response with the updated book data
         }
 
         private async Task AddGenres(List<IdDto> genres, Book book)

@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.ReadingLists.Commands
 {
-    public class AddReadingListCommand : IRequest<ReadingListDto>
+    public class AddReadingListCommand : IRequest<IActionResult>
     {
         public List<IdDto> Books { get; set; }
 

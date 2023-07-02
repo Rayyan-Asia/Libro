@@ -9,10 +9,11 @@ using AutoMapper;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class AddAuthorToBookCommandHandler : IRequestHandler<AddAuthorToBookCommand, BookDto>
+    public class AddAuthorToBookCommandHandler : IRequestHandler<AddAuthorToBookCommand, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
@@ -28,14 +29,14 @@ namespace Application.Entities.Books.Handlers
             _logger = logger;
         }
 
-        public async  Task<BookDto> Handle(AddAuthorToBookCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddAuthorToBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving book with Id {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book not found with ID {request.BookId}");
-                return null;
+                return new NotFoundObjectResult($"Book with ID {request.BookId} was not found.");
             }
 
             _logger.LogInformation($"Retrieving author with Id {request.AuthorId}");
@@ -43,17 +44,18 @@ namespace Application.Entities.Books.Handlers
             if (author == null)
             {
                 _logger.LogError($"Author not found with ID {request.AuthorId}");
-                return null;
+                return new NotFoundObjectResult($"Author with ID {request.AuthorId} was not found.");
             }
-                
+
             if (book.Authors.Any(g => g.Id == author.Id))
-                return null;
+                return new BadRequestObjectResult($"Author with ID {request.AuthorId} is already associated with the book.");
+
             book.Authors.Add(author);
             _logger.LogInformation($"Updating book with Id {request.BookId}");
             await _bookRepository.UpdateBookAsync(book);
 
             var bookDto = _mapper.Map<BookDto>(book);
-            return bookDto;
+            return new OkObjectResult(bookDto);
         }
     }
 }

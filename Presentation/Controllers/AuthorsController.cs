@@ -58,9 +58,7 @@ namespace Presentation.Controllers
                 return BadRequest(result.Errors);
             }
 
-            var author = await _mediator.Send(addAuthorCommand);
-            if (author == null) return BadRequest();
-            return Ok(author);
+            return await _mediator.Send(addAuthorCommand);
         }
 
         [HttpPost("edit")]
@@ -74,9 +72,8 @@ namespace Presentation.Controllers
             {
                 return BadRequest(result.Errors);
             }
-            var author = await _mediator.Send(editAuthorCommand);
-            if (author == null) return BadRequest();
-            return Ok(author);
+            return await _mediator.Send(editAuthorCommand);
+            
         }
 
         [HttpPost("remove/{authorId}")]
@@ -90,9 +87,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(removeAuthorCommand);
-            if (!result) return BadRequest();
-            return Ok();
+            return await _mediator.Send(removeAuthorCommand);
         }
 
 
@@ -106,9 +101,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var author = await _mediator.Send(addBookToAuthorCommand);
-            if (author == null) return BadRequest();
-            return Ok(author);
+            return await _mediator.Send(addBookToAuthorCommand);   
         }
 
         [HttpPost("remove/book")]
@@ -120,9 +113,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(removeBookFromAuthorCommand);
-            if (result == null) return BadRequest();
-            return Ok(result);
+            return await _mediator.Send(removeBookFromAuthorCommand);
         }
 
 

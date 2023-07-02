@@ -9,11 +9,12 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Authors.Handlers
 {
-    public class AddBookToAuthorCommandHandler : IRequestHandler<AddBookToAuthorCommand, AuthorDto>
+    public class AddBookToAuthorCommandHandler : IRequestHandler<AddBookToAuthorCommand, IActionResult>
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IBookRepository _bookRepository;
@@ -28,26 +29,30 @@ namespace Application.Entities.Authors.Handlers
             _logger = logger;
         }
 
-        public async Task<AuthorDto> Handle(AddBookToAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(AddBookToAuthorCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving author with Id {request.AuthorId}");
             var author = await _authorRepository.GetAuthorByIdIncludingCollectionsAsync(request.AuthorId);
             if (author == null)
             {
                 _logger.LogError($"Author Was NOT FOUND with Id {request.AuthorId}");
-                return null;
+                return new NotFoundObjectResult($"Author with Id {request.AuthorId} was not found.");
             }
+
             _logger.LogInformation($"Retrieving book with Id {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book Was Not Found with Id {request.BookId}");
-                return null;
+                return new NotFoundObjectResult($"Book with Id {request.BookId} was not found.");
             }
-                
+
             if (author.Books.Any(g => g.Id == book.Id))
-                return null;
-            
+            {
+                // If the book is already in the author's collection, return a BadRequest result.
+                return new BadRequestObjectResult($"Book with Id {request.BookId} is already in the author's collection.");
+            }
+
             author.Books.Add(book);
             _logger.LogInformation($"Adding Book to author's collection and updating author");
             await _authorRepository.UpdateAuthorAsync(author);
@@ -58,7 +63,7 @@ namespace Application.Entities.Authors.Handlers
                 Description = b.Description,
                 PublicationDate = b.PublicationDate,
             }).ToList();
-            return _mapper.Map<AuthorDto>(author);
+            return new OkObjectResult(_mapper.Map<AuthorDto>(author));
         }
     }
 }

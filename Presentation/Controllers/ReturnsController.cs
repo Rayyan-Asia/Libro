@@ -61,10 +61,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var bookReturnDto = await _mediator.Send(bookReturnCommand);
-                    if (bookReturnDto == null)
-                        return BadRequest();
-                    return Ok(bookReturnDto);
+                    return await _mediator.Send(bookReturnCommand);
                 }
             }
             return Unauthorized();
@@ -87,10 +84,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var bookReturnDto = await _mediator.Send(approveBookReturnCommand);
-            if (bookReturnDto == null)
-                return BadRequest();
-            return Ok(bookReturnDto);
+            return await _mediator.Send(approveBookReturnCommand);
         }
     }
 }

@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Feedbacks.Commands
 {
-    public class EditFeedbackCommand : IRequest<FeedbackDto>
+    public class EditFeedbackCommand : IRequest<IActionResult>
     {
         [Required]
         public int Id { get; set; }

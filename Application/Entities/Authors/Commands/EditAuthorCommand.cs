@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Authors.Commands
 {
-    public class EditAuthorCommand : IRequest<AuthorDto>
+    public class EditAuthorCommand : IRequest<IActionResult>
     {
         [Required]
         public int Id { get; set; }

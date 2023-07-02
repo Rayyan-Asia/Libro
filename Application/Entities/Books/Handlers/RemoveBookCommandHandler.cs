@@ -7,11 +7,12 @@ using Application.Entities.Books.Commands;
 using Application.Interfaces;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Books.Handlers
 {
-    public class RemoveBookCommandHandler : IRequestHandler<RemoveBookCommand, bool>
+    public class RemoveBookCommandHandler : IRequestHandler<RemoveBookCommand, IActionResult>
     {
         private readonly IBookRepository _bookRepository;
         private readonly ILogger<RemoveBookCommandHandler> _logger;
@@ -22,18 +23,18 @@ namespace Application.Entities.Books.Handlers
             _logger = logger;
         }
 
-        public async Task<bool> Handle(RemoveBookCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(RemoveBookCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving book with Id {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book not found with ID {request.BookId}");
-                return false;
+                return new NotFoundObjectResult($"Book not found with ID {request.BookId}");
             }
             _logger.LogInformation($"Removing Book with ID {book.Id}");
             await _bookRepository.RemoveBookAsync(book);
-            return true;
+            return new NoContentResult();
         }
     }
 }

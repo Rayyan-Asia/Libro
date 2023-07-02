@@ -9,10 +9,11 @@ using AutoMapper;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Feedbacks.Handlers
 {
-    public class EditFeedbackCommandHandler : IRequestHandler<EditFeedbackCommand,FeedbackDto>
+    public class EditFeedbackCommandHandler : IRequestHandler<EditFeedbackCommand,IActionResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IBookRepository _bookRepository;
@@ -30,32 +31,34 @@ namespace Application.Entities.Feedbacks.Handlers
             _logger = logger;
         }
 
-        public async Task<FeedbackDto> Handle(EditFeedbackCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(EditFeedbackCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving feedback with ID {request.Id}");
             var original = await _feedbackRepository.GetFeedbackByIdAsync(request.Id);
             if (original == null)
             {
                 _logger.LogError($"Feedback NOT FOUND with ID {request.Id}");
-                return null;
+                return new NotFoundObjectResult($"Feedback NOT FOUND with ID {request.Id}"); // Return a 404 Not Found response
             }
 
             _logger.LogInformation($"Retrieving user with ID {request.UserId}");
-            if (await _userRepository.GetUserByIdAsync(request.UserId) == null)
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+            if (user == null)
             {
                 _logger.LogError($"User NOT FOUND with ID {request.UserId}");
-                return null;
+                return new NotFoundObjectResult($"User NOT FOUND with ID {request.UserId}"); // Return a 404 Not Found response
             }
 
             _logger.LogInformation($"Retrieving book with ID {request.BookId}");
-            if (await _bookRepository.GetBookByIdAsync(request.BookId) == null)
+            var book = await _bookRepository.GetBookByIdAsync(request.BookId);
+            if (book == null)
             {
                 _logger.LogError($"Book NOT FOUND with ID {request.BookId}");
-                return null;
+                return new NotFoundObjectResult($"Book NOT FOUND with ID {request.BookId}");
             }
-                
-            if(original.UserId != request.UserId)
-                return null;
+
+            if (original.UserId != request.UserId)
+                return new ForbidResult("User ID does not match ID of Creator");
 
             original.Rating = request.Rating;
             original.CreatedDate = request.CreatedDate;
@@ -65,7 +68,8 @@ namespace Application.Entities.Feedbacks.Handlers
 
             _logger.LogInformation($"Updating feedback with Id {original.Id}");
             var updated = await _feedbackRepository.UpdateFeedbackAsync(original);
-            return _mapper.Map<FeedbackDto>(updated);
+
+            return new OkObjectResult(_mapper.Map<FeedbackDto>(updated)); // Return a 200 OK response with the updated feedback data
         }
     }
 }

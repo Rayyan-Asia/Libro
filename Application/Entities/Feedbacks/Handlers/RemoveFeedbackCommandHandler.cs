@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Entities.Feedbacks.Commands;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Entities.Feedbacks.Handlers
 {
-    public class RemoveFeedbackCommandHandler : IRequestHandler<RemoveFeedbackCommand,bool>
+    public class RemoveFeedbackCommandHandler : IRequestHandler<RemoveFeedbackCommand,IActionResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IFeebackRepository _feedbackRepository;
@@ -23,30 +25,33 @@ namespace Application.Entities.Feedbacks.Handlers
             _logger = logger;
         }
 
-        public async Task<bool> Handle(RemoveFeedbackCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(RemoveFeedbackCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving user with ID {request.UserId}");
-            if (await _userRepository.GetUserByIdAsync(request.UserId) == null)
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+            if (user == null)
             {
                 _logger.LogError($"User NOT FOUND with ID {request.UserId}");
-                return false;
+                return new  NotFoundObjectResult($"User NOT FOUND with ID {request.UserId}"); // Return a 404 Not Found response
             }
 
             _logger.LogInformation($"Retrieving feedback with ID {request.FeedbackId}");
             var feedback = await _feedbackRepository.GetFeedbackByIdAsync(request.FeedbackId);
-            if ( feedback == null)
+            if (feedback == null)
             {
-                _logger.LogError($"User NOT FOUND with ID {request.UserId}");
-                return false;
+                _logger.LogError($"Feedback NOT FOUND with ID {request.FeedbackId}");
+                return new NotFoundObjectResult($"Feedback NOT FOUND with ID {request.FeedbackId}"); // Return a 404 Not Found response
             }
-            if ( feedback.UserId != request.UserId)
+
+            if (feedback.UserId != request.UserId)
             {
                 _logger.LogError($"User is not the owner of the feedback with Id {feedback.Id}");
-                return false;
+                return new ForbidResult("User ID does not match ID of Creator");
             }
+
             _logger.LogInformation($"Removing feedback with ID {feedback.Id}");
             await _feedbackRepository.RemoveFeedbackAsync(feedback);
-            return true;
+            return new NoContentResult();
         }
     }
 }

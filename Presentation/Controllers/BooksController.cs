@@ -82,9 +82,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(addBookCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(addBookCommand);
         }
 
         [HttpPost("edit")]
@@ -96,9 +94,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(editBookCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(editBookCommand);
         }
 
 
@@ -111,9 +107,8 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(addAuthorCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(addAuthorCommand);
+            
         }
 
         [HttpPost("remove/author")]
@@ -125,9 +120,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(removeAuthorCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(removeAuthorCommand);
         }
 
 
@@ -140,9 +133,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(addGenreCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(addGenreCommand);
         }
 
         [HttpPost("remove/genre")]
@@ -154,9 +145,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(removeGenreCommand);
-            if (book == null) return BadRequest();
-            return Ok(book);
+            return await _mediator.Send(removeGenreCommand);
         }
 
         [HttpPost("remove/{bookId}")]
@@ -170,12 +159,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var book = await _mediator.Send(removeBookCommand);
-            if (book == false) return BadRequest();
-            return Ok();
+            return await _mediator.Send(removeBookCommand);   
         }
-
-
-
     }
 }

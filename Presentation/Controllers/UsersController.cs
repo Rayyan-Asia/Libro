@@ -45,12 +45,7 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(userForRegistry);
-
-            if (result == null)
-                return BadRequest("Email already exists");
-
-            return Ok(result);
+            return await _mediator.Send(userForRegistry);
         }
 
         [HttpPost("login")]
@@ -65,10 +60,7 @@ namespace Presentation.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            var result = await _mediator.Send(loginQuery);
-
-
-            return result != null ? Ok(result) : BadRequest("Does not exist");
+            return await _mediator.Send(loginQuery);
         }
 
         [HttpPost("role")]
@@ -92,9 +84,7 @@ namespace Presentation.Controllers
                         {
                             return BadRequest(validationResult.Errors);
                         }
-                        var result = await _mediator.Send(modifyRoleCommand);
-                        if (result == null) return BadRequest();
-                        return Ok(result);
+                        return await _mediator.Send(modifyRoleCommand);
                     }
                 }
             }
@@ -112,10 +102,8 @@ namespace Presentation.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var result = await _mediator.Send(query);
-            if (result == null)
-                return BadRequest(); 
-            return Ok(result);
+            return await _mediator.Send(query);
+            
 
         }
 
@@ -136,10 +124,7 @@ namespace Presentation.Controllers
                     {
                         return BadRequest(validationResult.Errors);
                     }
-                    var result = await _mediator.Send(query);
-                    if (result == null)
-                        return BadRequest();
-                    return Ok(result);
+                    return await _mediator.Send(query);
 
                 }
             }

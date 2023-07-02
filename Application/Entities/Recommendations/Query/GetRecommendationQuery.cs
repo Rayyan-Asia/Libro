@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Recommendations.Query
 {
-    public class GetRecommendationQuery : IRequest<BookDto>
+    public class GetRecommendationQuery : IRequest<IActionResult>
     {
         public int UserId;
     }

@@ -10,10 +10,11 @@ using Domain;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Authors.Handlers
 {
-    public class RemoveBookFromAuthorCommandHandler : IRequestHandler<RemoveBookFromAuthorCommand,AuthorDto>
+    public class RemoveBookFromAuthorCommandHandler : IRequestHandler<RemoveBookFromAuthorCommand,IActionResult>
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IBookRepository _bookRepository;
@@ -28,28 +29,31 @@ namespace Application.Entities.Authors.Handlers
             _logger = logger;
         }
 
-        public async Task<AuthorDto> Handle(RemoveBookFromAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Handle(RemoveBookFromAuthorCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving author with Id {request.AuthorId}");
             var author = await _authorRepository.GetAuthorByIdIncludingCollectionsAsync(request.AuthorId);
             if (author == null)
             {
                 _logger.LogError($"Author not found with ID {request.AuthorId}");
-                return null;
+                return new NotFoundObjectResult($"Author with ID {request.AuthorId} was not found.");
             }
+
             _logger.LogInformation($"Retrieving book with Id {request.BookId}");
             var book = await _bookRepository.GetBookByIdAsync(request.BookId);
             if (book == null)
             {
                 _logger.LogError($"Book not found with ID {request.BookId}");
-                return null;
+                return new NotFoundObjectResult($"Book with ID {request.BookId} was not found.");
             }
-                
+
             if (!author.Books.Any(g => g.Id == book.Id))
-                return null;
+                return new BadRequestObjectResult($"Book with ID {request.BookId} is not associated with the author.");
+
             author.Books.Remove(book);
             _logger.LogInformation($"Updating Author with Id {request.BookId}");
             await _authorRepository.UpdateAuthorAsync(author);
+
             author.Books = author.Books.Select(b => new Book
             {
                 Id = b.Id,
@@ -57,7 +61,8 @@ namespace Application.Entities.Authors.Handlers
                 Description = b.Description,
                 PublicationDate = b.PublicationDate,
             }).ToList();
-            return _mapper.Map<AuthorDto>(author);
+
+            return new OkObjectResult(_mapper.Map<AuthorDto>(author));
         }
     }
 }

@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.ReadingLists.Commands
 {
-    public class EditReadingListCommand : IRequest<ReadingListDto>
+    public class EditReadingListCommand : IRequest<IActionResult>
     {
         public int Id { get; set; }
         public List<IdDto> Books { get; set; }

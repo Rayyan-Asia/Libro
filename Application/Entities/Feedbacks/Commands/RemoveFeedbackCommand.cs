@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Entities.Feedbacks.Commands
 {
-    public class RemoveFeedbackCommand : IRequest<bool>
+    public class RemoveFeedbackCommand : IRequest<IActionResult>
     {
         [Required]
         public int FeedbackId { get; set; }
