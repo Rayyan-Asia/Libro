@@ -2,12 +2,14 @@ using System.Reflection;
 using System.Text;
 using Application.Profiles;
 using AutoDependencyRegistration;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Presentation.Validators.Users;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -34,6 +36,7 @@ namespace Presentation
 
             builder.Services.AddDbContext<LibroDbContext>(DbContextOptions => DbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:LibroDbConnectionString"]));
 
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginQueryValidator>();
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddFluentValidationClientsideAdapters();
 

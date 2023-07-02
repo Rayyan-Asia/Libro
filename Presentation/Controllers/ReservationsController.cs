@@ -1,11 +1,14 @@
 ﻿using System.Text.Json;
 using Application;
+using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Reservations.Commnads;
 using Application.Entities.Reservations.Queries;
 using Domain;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Validators.Reservations;
 
 namespace Presentation.Controllers
 {
@@ -16,10 +19,15 @@ namespace Presentation.Controllers
     {
 
         private readonly IMediator _mediator;
+        private readonly ReserveBookCommandValidator _reserveBookCommandValidator;
+        private readonly ApproveReservationCommandValidator _approveReservationValidator;
 
-        public ReservationsController(IMediator mediator)
+        public ReservationsController(IMediator mediator, ReserveBookCommandValidator reserveBookCommandValidator,
+            ApproveReservationCommandValidator approveReservationValidator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mediator = mediator;
+            _reserveBookCommandValidator = reserveBookCommandValidator;
+            _approveReservationValidator = approveReservationValidator;
         }
 
         [HttpPost("reserve/{bookId}")]
@@ -35,6 +43,11 @@ namespace Presentation.Controllers
                     if (user?.Role == Role.Patron)
                     {
                         var request = new ReserveBookCommand() { BookId = bookId, UserId = user.Id };
+                        ValidationResult validationResult = _reserveBookCommandValidator.Validate(request);
+                        if (!validationResult.IsValid)
+                        {
+                            return BadRequest(validationResult.Errors);
+                        }
                         var result = await _mediator.Send(request);
                         if (result == null) return BadRequest();
                         return Ok(result);
@@ -60,6 +73,11 @@ namespace Presentation.Controllers
         public async Task<IActionResult> ApproveReservation(int reservationId)
         {
             var request = new ApproveReservationCommand() { ReservationId = reservationId };
+            ValidationResult validationResult = _approveReservationValidator.Validate(request);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
             var result = await _mediator.Send(request);
             if (result == null) return BadRequest();
             return Ok(result);

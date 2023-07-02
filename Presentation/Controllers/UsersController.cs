@@ -1,11 +1,15 @@
 ﻿using Application;
+using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Profiles.Queries;
 using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
 using Domain;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Validators.Profiles;
+using Presentation.Validators.Users;
 
 namespace Presentation.Controllers
 {
@@ -15,10 +19,20 @@ namespace Presentation.Controllers
     public class UsersController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly LoginQueryValidator _loginValidator;
+        private readonly ModifyRoleCommandValidator _modifyRoleValidator;
+        private readonly RegisterCommandValidator _registerValidator;
+        private readonly ViewProfileQueryValidator _viewProfileValidator;
 
-        public UsersController(IMediator mediator)
+        public UsersController(IMediator mediator, LoginQueryValidator loginValidator,
+            ModifyRoleCommandValidator modifyRoleValidator, RegisterCommandValidator registerValidator, 
+            ViewProfileQueryValidator viewPorfileValidator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mediator = mediator;
+            _loginValidator = loginValidator;
+            _modifyRoleValidator = modifyRoleValidator;
+            _registerValidator = registerValidator;
+            _viewProfileValidator = viewPorfileValidator;
         }
 
         [HttpPost("register")]
@@ -26,7 +40,11 @@ namespace Presentation.Controllers
         {
             if (userForRegistry == null || !ModelState.IsValid)
                 return BadRequest();
-
+            ValidationResult validationResult = _registerValidator.Validate(userForRegistry);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
             var result = await _mediator.Send(userForRegistry);
 
             if (result == null)
@@ -40,6 +58,12 @@ namespace Presentation.Controllers
         {
             if (loginQuery == null || !ModelState.IsValid)
                 return BadRequest();
+
+            ValidationResult validationResult = _loginValidator.Validate(loginQuery);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
 
             var result = await _mediator.Send(loginQuery);
 
@@ -63,6 +87,11 @@ namespace Presentation.Controllers
                     var user = JwtService.GetUserFromPayload(token);
                     if (user?.Role == Role.Administrator && user.Id != modifyRoleCommand.UserId)
                     {
+                        ValidationResult validationResult = _modifyRoleValidator.Validate(modifyRoleCommand);
+                        if (!validationResult.IsValid)
+                        {
+                            return BadRequest(validationResult.Errors);
+                        }
                         var result = await _mediator.Send(modifyRoleCommand);
                         if (result == null) return BadRequest();
                         return Ok(result);
@@ -76,7 +105,13 @@ namespace Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> ViewProfile(int userId)
         { 
+            if (userId <= 0) return BadRequest();
             var query = new ViewProfileQuery() { PatronId = userId };
+            ValidationResult validationResult = _viewProfileValidator.Validate(query);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
             var result = await _mediator.Send(query);
             if (result == null)
                 return BadRequest(); 
@@ -96,6 +131,11 @@ namespace Presentation.Controllers
                     var user = JwtService.GetUserFromPayload(token);
                     if (user == null) return BadRequest();
                     var query = new ViewProfileQuery() { PatronId = user.Id };
+                    ValidationResult validationResult = _viewProfileValidator.Validate(query);
+                    if (!validationResult.IsValid)
+                    {
+                        return BadRequest(validationResult.Errors);
+                    }
                     var result = await _mediator.Send(query);
                     if (result == null)
                         return BadRequest();

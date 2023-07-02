@@ -1,10 +1,13 @@
 ﻿using System.Text.Json;
 using Application;
+using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Returns.Commands;
 using Application.Entities.Returns.Queries;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Validators.Returns;
 
 namespace Presentation.Controllers
 {
@@ -14,10 +17,14 @@ namespace Presentation.Controllers
     public class ReturnsController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ApproveBookReturnCommandValidator _approveValidator;
+        private readonly BookReturnCommandValidator _bookReturnValidator;
 
-        public ReturnsController(IMediator mediator)
+        public ReturnsController(IMediator mediator, ApproveBookReturnCommandValidator approveValidator, BookReturnCommandValidator bookReturnValidator)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mediator = mediator;
+            _approveValidator = approveValidator;
+            _bookReturnValidator = bookReturnValidator;
         }
 
         [HttpGet]
@@ -49,7 +56,11 @@ namespace Presentation.Controllers
                         return BadRequest();
 
                     var bookReturnCommand = new BookReturnCommand() { LoanId = loanId, UserId = user.Id };
-
+                    ValidationResult validationResult = _bookReturnValidator.Validate(bookReturnCommand);
+                    if (!validationResult.IsValid)
+                    {
+                        return BadRequest(validationResult.Errors);
+                    }
                     var bookReturnDto = await _mediator.Send(bookReturnCommand);
                     if (bookReturnDto == null)
                         return BadRequest();
@@ -69,9 +80,14 @@ namespace Presentation.Controllers
         {
             if (bookReturnId == 0)
                 return BadRequest();
+            var approveBookReturnCommand = new ApproveBookReturnCommand() { BookReturnId = bookReturnId };
 
-            var bookReturnCommand = new ApproveBookReturnCommand() { BookReturnId = bookReturnId };
-            var bookReturnDto = await _mediator.Send(bookReturnCommand);
+            ValidationResult validationResult = _approveValidator.Validate(approveBookReturnCommand);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            var bookReturnDto = await _mediator.Send(approveBookReturnCommand);
             if (bookReturnDto == null)
                 return BadRequest();
             return Ok(bookReturnDto);
