@@ -10,7 +10,6 @@ namespace Infrastructure.Repositories
     [RegisterClassAsScoped]
     public class LoanRepository : ILoanRepository
     {
-
         private readonly LibroDbContext _context;
 
         public LoanRepository(LibroDbContext context)
@@ -28,7 +27,7 @@ namespace Infrastructure.Repositories
         public async Task<(PaginationMetadata, List<Loan>)> GetAllLoansAsync(int pageNumber, int pageSize)
         {
             var loans = await _context.Loans
-              .AsNoTracking().Where(b => b.ReturnDate == null).ToListAsync();
+              .AsNoTracking().Where(b => b.ReturnDate == null && !b.isExcused).ToListAsync();
 
             var count = loans.Count;
 
@@ -51,20 +50,82 @@ namespace Infrastructure.Repositories
         public async Task<(PaginationMetadata, List<Loan>)> GetAllLoansByUserIdAsync(int pageNumber, int pageSize, int userId)
         {
             var loans = await _context.Loans
-              .AsNoTracking().Where(b => b.ReturnDate == null && b.UserId == userId).ToListAsync();
+              .AsNoTracking().Where(b => b.ReturnDate == null && b.UserId == userId && !b.isExcused).ToListAsync();
 
             var count = loans.Count;
+
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
 
             var metadata = new PaginationMetadata()
             {
                 ItemCount = count,
-                PageCount = pageNumber,
+                PageCount = pageNumber + 1,
                 PageSize = pageSize
             };
-
+            var take = pageSize - count % pageSize;
             var filteredLoans = loans.OrderBy(b => b.DueDate)
-                .Skip(pageNumber * pageSize).Take(pageSize).ToList();
+                .Skip(pageNumber * pageSize).Take(take).ToList();
             return (metadata, filteredLoans);
+        }
+
+        public async Task<List<Loan>> GetAllOverdueLoansByUserIdWithoutPaginationAsync(int userId)
+        {
+            return await _context.Loans
+              .AsNoTracking().Where(b => b.ReturnDate == null && b.UserId == userId && b.DueDate < DateTime.Now && !b.isExcused).ToListAsync();
+        }
+
+        public async Task<(PaginationMetadata, List<Loan>)> GetAllOverdueLoansByUserIdAsync(int pageNumber, int pageSize, int userId)
+        {
+            var loans = await _context.Loans
+              .AsNoTracking().Where(b => b.ReturnDate == null && b.UserId == userId && b.DueDate < DateTime.Now && !b.isExcused).ToListAsync();
+
+            var count = loans.Count;
+
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
+
+            var metadata = new PaginationMetadata()
+            {
+                ItemCount = count,
+                PageCount = pageNumber + 1,
+                PageSize = pageSize
+            };
+            var take = pageSize - count % pageSize;
+            var filteredLoans = loans.OrderBy(b => b.DueDate)
+                .Skip(pageNumber * pageSize).Take(take).ToList();
+            return (metadata, filteredLoans);
+        }
+
+        public async Task<(PaginationMetadata, List<Loan>)> GetAllOverdueLoansAsync(int pageNumber, int pageSize)
+        {
+            var loans = await _context.Loans
+              .AsNoTracking().Where(b => b.ReturnDate == null && !b.isExcused && b.DueDate < DateTime.Now).ToListAsync();
+
+            var count = loans.Count;
+
+            var pageCount = (int)Math.Ceiling((double)count / pageSize) - 1;
+
+            if (pageNumber > pageCount) pageNumber = pageCount;
+
+            var metadata = new PaginationMetadata()
+            {
+                ItemCount = count,   
+                PageCount = pageNumber + 1,
+                PageSize = pageSize
+            };
+            var take = pageSize - count % pageSize;
+            var filteredLoans = loans.OrderBy(b => b.DueDate)
+                .Skip(pageNumber * pageSize).Take(take).ToList();
+            return (metadata, filteredLoans);
+        }
+
+        public async Task<List<Loan>> GetAllLoansByUserIdWithoutPaginationAsync(int userId)
+        {
+            return await _context.Loans
+              .AsNoTracking().Where(b => b.ReturnDate == null && b.UserId == userId && !b.isExcused).ToListAsync();
         }
 
         public async Task<Loan?> GetLoanByIdAsync(int loanId)
@@ -75,7 +136,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> IsPatronEligableForLoanAsync(int userId)
         {
-            var count = await _context.Loans.Where(b => b.ReturnDate == null && b.UserId == userId).CountAsync();
+            var count = await _context.Loans.Where(b => b.ReturnDate == null && b.UserId == userId && !b.isExcused).CountAsync();
             return count < 5;
         }
 

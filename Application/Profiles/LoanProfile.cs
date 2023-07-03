@@ -14,6 +14,7 @@ namespace Application.Profiles
         public LoanProfile()
         {
             CreateMap<Loan, LoanDto>();
+            CreateMap<Loan, OverdueLoanDto>();
         }
     }
 }
