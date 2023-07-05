@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Entities.Users.Commands;
 using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain;
 using MediatR;

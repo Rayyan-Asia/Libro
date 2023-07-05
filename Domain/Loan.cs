@@ -23,5 +23,12 @@ namespace Domain
         public DateTime? ReturnDate { get; set; }
 
         public bool isExcused { get; set; } = false;
+
+        public List<Job> Jobs { get; set; }
+
+        public Loan()
+        {
+            Jobs = new List<Job>();
+        }
     }
 }

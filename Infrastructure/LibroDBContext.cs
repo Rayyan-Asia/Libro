@@ -18,6 +18,7 @@ namespace Libro.Infrastructure
         public DbSet<ReadingList> ReadingLists { get; set; }
         public DbSet<ReadingListBook> ReadingListBooks { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Job> Jobs { get; set; }
 
         public LibroDbContext(DbContextOptions<LibroDbContext> options)
             : base(options)

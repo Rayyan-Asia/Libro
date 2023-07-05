@@ -1,17 +1,22 @@
 using System.Reflection;
 using System.Text;
+using Application.Interfaces;
 using Application.Profiles;
 using AutoDependencyRegistration;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure;
 using Libro.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Validators.Users;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace Presentation
 {
@@ -74,7 +79,19 @@ namespace Presentation
                   };
               });
 
+            builder.Services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireDbConnectionString")));
 
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
+
+
+
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddScoped<IMailService,MailService>();
 
             builder.Services.AddMvc();
 
@@ -114,13 +131,15 @@ namespace Presentation
             }
 
             app.UseRouting();
+            
             app.MapControllers();
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseHangfireDashboard();
+            app.MapHangfireDashboard();
 
             app.Run();
         }

@@ -33,6 +33,13 @@ namespace Infrastructure.Repositories
             return reservation;
         }
 
+        public async Task<Reservation> UpdateReservationAsync(Reservation reservation)
+        {
+            _context.Reservations.Update(reservation);
+            await _context.SaveChangesAsync();
+            return reservation;
+        }
+
         public async Task<(PaginationMetadata, List<Reservation>)> GetAllReservationsAsync(int pageNumber, int pageSize)
         {
             var reservations = await _context.Reservations.AsNoTracking()

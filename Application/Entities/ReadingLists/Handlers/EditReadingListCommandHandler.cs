@@ -39,7 +39,7 @@ namespace Application.Entities.ReadingLists.Handlers
             if (request.UserId != readingList.UserId)
             {
                 _logger.LogError($"User does not own reading list with ID {request.Id}");
-                return new ForbidResult($"User does not own reading list with ID {request.Id}"); // Or you can return a ForbiddenResult
+                return new BadRequestObjectResult($"User does not own reading list with ID {request.Id}"); // Or you can return a ForbiddenResult
             }
 
             _logger.LogInformation($"Clearing books from reading list with ID {readingList.Id}");

@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Application;
 using Application.Entities.ReadingLists.Commands;
 using Application.Entities.ReadingLists.Queries;
+using Application.Services;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

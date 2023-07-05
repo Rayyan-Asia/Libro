@@ -126,6 +126,10 @@ namespace Infrastructure.Repositories
         {
             return await _context.Books.Include(b => b.Genres).Include(b=>b.Authors).SingleOrDefaultAsync(b => b.Id == bookId);
         }
+        public async Task<Book?> GetBookWithoutTrackingByIdAsync(int bookId)
+        {
+            return await _context.Books.Include(b => b.Genres).Include(b => b.Authors).AsNoTracking().SingleOrDefaultAsync(b => b.Id == bookId);
+        }
 
         public async Task<Book?> ReserveBookAsync(Book book)
         {

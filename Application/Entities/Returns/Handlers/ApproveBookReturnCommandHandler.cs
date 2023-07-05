@@ -10,6 +10,7 @@ using Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Domain;
 
 namespace Application.Entities.Returns.Handlers
 {
@@ -19,16 +20,22 @@ namespace Application.Entities.Returns.Handlers
         private readonly ILoanRepository _loanRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<ApproveBookReturnCommandHandler> _logger;
+        private readonly IMailService _mailService;
+        private readonly IJobService _jobService;
 
         public ApproveBookReturnCommandHandler(IBookReturnRepository bookReturnRepository, ILoanRepository loanRepository,
-            IBookRepository bookRepository, IMapper mapper, ILogger<ApproveBookReturnCommandHandler> logger)
+            IBookRepository bookRepository, IMapper mapper, ILogger<ApproveBookReturnCommandHandler> logger, IUserRepository userRepository, IMailService mailService, IJobService jobService)
         {
             _bookReturnRepository = bookReturnRepository;
             _loanRepository = loanRepository;
             _bookRepository = bookRepository;
             _mapper = mapper;
             _logger = logger;
+            _userRepository = userRepository;
+            _mailService = mailService;
+            _jobService = jobService;
         }
 
         public async Task<IActionResult> Handle(ApproveBookReturnCommand request, CancellationToken cancellationToken)
@@ -62,8 +69,20 @@ namespace Application.Entities.Returns.Handlers
             _logger.LogInformation($"Returning book with ID {book.Id}");
             await _loanRepository.SetLoanReturnDateAsync(loan, bookReturn.ReturnDate);
             await _bookRepository.ChangeBookAsAvailableAsync(book);
+            await SendBookReturnEmail(bookReturn.Loan.UserId, book);
             bookReturn = await _bookReturnRepository.SetBookReturnApprovedAsync(bookReturn);
+            await _jobService.RemoveJobsAsync(loan.Jobs);
             return new OkObjectResult(_mapper.Map<BookReturnDto>(bookReturn));
+        }
+
+        private async Task SendBookReturnEmail(int userId, Book book)
+        {
+            User user = await _userRepository.GetUserByIdAsync(userId);
+            string to = user.Name;
+            string toAddress = user.Email;
+            string subject = "Libro Book Return";
+            string body = $"Hello There {user.Name},\nYou have been approved for a book return for the book {book.Title}.\nThanks for returning the book.";
+            await _mailService.SendEmailAsync(toAddress, to, subject, body);
         }
     }
 }

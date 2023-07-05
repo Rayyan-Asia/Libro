@@ -130,7 +130,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Loan?> GetLoanByIdAsync(int loanId)
         {
-            var loan = await _context.Loans.SingleOrDefaultAsync(l => l.Id == loanId);
+            var loan = await _context.Loans.Include(l=>l.Jobs).SingleOrDefaultAsync(l => l.Id == loanId);
             return loan;
         }
 
@@ -155,6 +155,7 @@ namespace Infrastructure.Repositories
             {
                 return false;
             }
+            loan.Jobs = new List<Job>();
             loan.isExcused = true;
             await _context.SaveChangesAsync();
             return true;
@@ -163,7 +164,11 @@ namespace Infrastructure.Repositories
         {
             var loans = await _context.Loans.Where(loan => loan.UserId == userId).ToListAsync();
 
-            loans.ForEach(loan => loan.isExcused = true);
+            foreach(var loan in loans ) 
+            {
+                loan.isExcused = true;
+                loan.Jobs = new List<Job>();
+            }
 
             await _context.SaveChangesAsync();
             return loans.Count > 0;

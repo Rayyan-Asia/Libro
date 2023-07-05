@@ -6,11 +6,11 @@ using Domain;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 
-namespace Application
+namespace Application.Services
 {
     public static class JwtService
     {
-        public static User? GetUserFromPayload(string jwtToken)
+        public static User GetUserFromPayload(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = tokenHandler.ReadJwtToken(jwtToken);

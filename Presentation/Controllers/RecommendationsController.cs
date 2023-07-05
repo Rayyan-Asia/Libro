@@ -1,5 +1,4 @@
 ﻿using Application.Entities.Feedbacks.Commands;
-using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
@@ -7,6 +6,7 @@ using Application.Entities.Recommendations.Query;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Presentation.Validators.Recommendations;
 using FluentValidation.Results;
+using Application.Services;
 
 namespace Presentation.Controllers
 {

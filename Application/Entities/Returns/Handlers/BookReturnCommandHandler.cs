@@ -38,7 +38,7 @@ namespace Application.Entities.Returns.Handlers
             if (loan.UserId != request.UserId)
             {
                 _logger.LogError($"User IS NOT THE OWNER of the loan with ID {loan.Id}");
-                return new ForbidResult("User is not the owner of the loan with ID " + loan.Id);
+                return new BadRequestObjectResult("User is not the owner of the loan with ID " + loan.Id);
             }
 
             _logger.LogInformation($"Retrieving loan with ID {loan.Id}");

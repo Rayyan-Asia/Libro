@@ -6,6 +6,7 @@ using Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Application.Services;
 
 namespace Application.Entities.Users.Handlers
 {
