@@ -3,6 +3,7 @@ using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Returns.Commands;
 using Application.Entities.Returns.Queries;
 using Application.Services;
+using Domain;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -49,8 +50,16 @@ namespace Presentation.Controllers
             {
                 if (authorizationHeader.Count > 0)
                 {
-                    var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    var token = authorizationHeader[0]?.Split(" ")[1];// Extract the JWT token
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
+                    
                     if (user == null) return BadRequest();
                     if (loanId == 0)
                         return BadRequest();

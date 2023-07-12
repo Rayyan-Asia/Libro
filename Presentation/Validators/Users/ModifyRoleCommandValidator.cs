@@ -1,4 +1,5 @@
 ﻿using Application.Entities.Users.Commands;
+using Domain;
 using FluentValidation;
 
 namespace Presentation.Validators.Users
@@ -10,8 +11,7 @@ namespace Presentation.Validators.Users
             RuleFor(command => command.UserId)
                 .NotEmpty().WithMessage("User ID is required.");
 
-            RuleFor(command => command.Role)
-                .NotEmpty().WithMessage("Role is required.");
+            RuleFor(command => command.Role).NotNull().IsInEnum();
         }
     }
 }

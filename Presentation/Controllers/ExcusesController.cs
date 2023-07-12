@@ -27,7 +27,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("loan/{loanId}")]
-        public async Task<IActionResult> ExcuseLoan(int loanId)
+        public async Task<IActionResult> ExcuseLoan([FromRoute] int loanId)
         {
             if (loanId <= 0)
             {
@@ -44,7 +44,7 @@ namespace Presentation.Controllers
 
 
         [HttpPost("user/{userId}")]
-        public async Task<IActionResult> ExcuseUser(int userId)
+        public async Task<IActionResult> ExcuseUser([FromRoute] int userId)
         {
             if (userId <= 0)
             {

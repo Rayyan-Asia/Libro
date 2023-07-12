@@ -67,7 +67,7 @@ namespace Presentation.Controllers
         [Authorize(Policy = "AdministratorRequired")]
         public async Task<IActionResult> ModifyRole([FromBody] ModifyRoleCommand modifyRoleCommand)
         {
-            if (modifyRoleCommand == null || !ModelState.IsValid)
+            if (modifyRoleCommand == null)
             {
                 return BadRequest();
             }
@@ -76,7 +76,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     if (user?.Role == Role.Administrator && user.Id != modifyRoleCommand.UserId)
                     {
                         ValidationResult validationResult = _modifyRoleValidator.Validate(modifyRoleCommand);
@@ -116,7 +124,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     if (user == null) return BadRequest();
                     var query = new ViewProfileQuery() { PatronId = user.Id };
                     ValidationResult validationResult = _viewProfileValidator.Validate(query);

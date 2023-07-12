@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Presentation.Validators.Recommendations;
 using FluentValidation.Results;
 using Application.Services;
+using Domain;
 
 namespace Presentation.Controllers
 {
@@ -20,6 +21,7 @@ namespace Presentation.Controllers
         public RecommendationsController(IMediator mediator)
         {
             _mediator = mediator;
+            _validator = new GetRecommendationQueryValidator();
         }
 
         [HttpGet]
@@ -30,7 +32,16 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
+
                     var getRecommendationQuery = new GetRecommendationQuery() { UserId = user.Id};
                     ValidationResult validationResult = _validator.Validate(getRecommendationQuery);
                     if (!validationResult.IsValid)

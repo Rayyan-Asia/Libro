@@ -4,6 +4,7 @@ using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Feedbacks.Queries;
 using Application.Entities.ReadingLists.Commands;
 using Application.Services;
+using Domain;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -78,7 +79,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     if (addFeedbackCommand == null) return BadRequest();
                     addFeedbackCommand.UserId = user.Id;
                     ValidationResult validationResult = _addFeedbackValidator.Validate(addFeedbackCommand);
@@ -122,7 +131,16 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
+                    
                     if (id <= 0) return BadRequest();
                     var removeFeedbackCommand = new RemoveFeedbackCommand() { UserId = user.Id , FeedbackId = id};
                     ValidationResult validationResult = _removeFeedbackValidator.Validate(removeFeedbackCommand);

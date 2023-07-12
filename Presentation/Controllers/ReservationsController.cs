@@ -39,7 +39,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     if (user?.Role == Role.Patron)
                     {
                         var request = new ReserveBookCommand() { BookId = bookId, UserId = user.Id };

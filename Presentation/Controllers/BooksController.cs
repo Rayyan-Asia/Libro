@@ -112,7 +112,7 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("remove/author")]
-        public async Task<IActionResult> Edit([FromBody] RemoveAuthorFromBookCommand removeAuthorCommand)
+        public async Task<IActionResult> RemoveAuthorFromBook([FromBody] RemoveAuthorFromBookCommand removeAuthorCommand)
         {
             if (removeAuthorCommand == null) return BadRequest();
             ValidationResult validationResult = _removeAuthorFromBookCommandValidator.Validate(removeAuthorCommand);

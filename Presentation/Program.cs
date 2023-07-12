@@ -42,8 +42,6 @@ namespace Presentation
             builder.Services.AddDbContext<LibroDbContext>(DbContextOptions => DbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:LibroDbConnectionString"]));
 
             builder.Services.AddValidatorsFromAssemblyContaining<LoginQueryValidator>();
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddFluentValidationClientsideAdapters();
 
             builder.Services.AutoRegisterDependencies();
 
@@ -91,7 +89,6 @@ namespace Presentation
 
 
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-            builder.Services.AddScoped<IMailService,MailService>();
 
             builder.Services.AddMvc();
 

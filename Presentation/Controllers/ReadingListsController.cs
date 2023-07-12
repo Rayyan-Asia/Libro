@@ -3,6 +3,7 @@ using System.Text.Json;
 using Application.Entities.ReadingLists.Commands;
 using Application.Entities.ReadingLists.Queries;
 using Application.Services;
+using Domain;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -46,9 +47,17 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
-
-                    if (browseReadingListsQuery == null) browseReadingListsQuery = new() { UserId = user.Id};
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
+                    if (browseReadingListsQuery == null) browseReadingListsQuery = new BrowseReadingListsQuery();
+                    if (browseReadingListsQuery.UserId == 0) browseReadingListsQuery.UserId = user.Id;
                     ValidationResult validationResult = _browseReadingListQueryValidator.Validate(browseReadingListsQuery);
                     if (!validationResult.IsValid)
                     {
@@ -73,7 +82,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     if (addReadingListCommand == null) return BadRequest();
                     addReadingListCommand.UserId = user.Id;
                     ValidationResult validationResult = _addReadingListValidator.Validate(addReadingListCommand);
@@ -121,7 +138,15 @@ namespace Presentation.Controllers
                 {
                     if (id == 0) return BadRequest();
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     var removeReadingListCommand = new RemoveReadingListCommand() { UserId = user.Id , ReadingListId = id};
                     ValidationResult validationResult = _removeReadingListValidator.Validate(removeReadingListCommand);
                     if (!validationResult.IsValid)
@@ -143,7 +168,15 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    User user;
+                    try
+                    {
+                        user = JwtService.GetUserFromPayload(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Unauthorized();
+                    }
                     addBookToReadingListCommand.UserId = user.Id;
                     ValidationResult validationResult = _addBookToReadingListValidator.Validate(addBookToReadingListCommand);
                     if (!validationResult.IsValid)

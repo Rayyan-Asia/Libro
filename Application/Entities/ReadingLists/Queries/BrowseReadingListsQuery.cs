@@ -14,7 +14,6 @@ namespace Application.Entities.ReadingLists.Queries
         [Range(0, 5)]
         public int pageSize { get; set; } = 5;
         public int pageNumber { get; set; } = 0;
-
-        public int UserId { get; set; }
+        public int UserId { get; set; } = 0;
     }
 }
