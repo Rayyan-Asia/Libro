@@ -6,8 +6,11 @@ using Application;
 using Application.DTOs;
 using Application.Entities.Returns.Commands;
 using Application.Entities.Returns.Queries;
+using Application.Services;
 using FluentValidation;
 using FluentValidation.Results;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,17 +27,19 @@ namespace Tests.Controllers
         private readonly ApproveBookReturnCommandValidator _approveValidator;
         private readonly BookReturnCommandValidator _bookReturnValidator;
         private readonly ReturnsController _controller;
+        private readonly IJwtService _jwtService;
 
         public ReturnsControllerTests()
         {
             _mediatorMock = new Mock<IMediator>();
             _approveValidator = new ApproveBookReturnCommandValidator();
             _bookReturnValidator = new BookReturnCommandValidator();
-
+            _jwtService = new JwtService();
             _controller = new ReturnsController(
                 _mediatorMock.Object,
                 _approveValidator,
-                _bookReturnValidator
+                _bookReturnValidator,
+                _jwtService
             );
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Entities.Emails.Commands;
 using Application.Interfaces;
+using Application.Services;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

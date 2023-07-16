@@ -4,13 +4,15 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Services;
+using AutoDependencyRegistration.Attributes;
 
-namespace Application
+namespace Infrastructure.Services
 {
-
-    public static class PasswordHasher
+    [RegisterClassAsScoped]
+    public class PasswordHasher : IPasswordHasher
     {
-        public static string ComputeHash(string password, string salt, int iteration = 4 )
+        public string ComputeHash(string password, string salt, int iteration = 4)
         {
             if (iteration <= 1) return password;
 
@@ -23,7 +25,7 @@ namespace Application
             return ComputeHash(hash, salt, iteration - 1);
         }
 
-        public static string GenerateSalt()
+        public string GenerateSalt()
         {
             using var rng = RandomNumberGenerator.Create();
             var byteSalt = new byte[16];
@@ -33,7 +35,7 @@ namespace Application
             return salt;
         }
 
-        public static bool VerifyPassword(string password, string salt, string passwordToCompare, int iteration = 4 )
+        public bool VerifyPassword(string password, string salt, string passwordToCompare, int iteration = 4)
         {
             string generatedPassword = ComputeHash(password, salt, iteration);
             return generatedPassword.Equals(passwordToCompare);

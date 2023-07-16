@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Interfaces;
+using Application.Services;
 using AutoDependencyRegistration.Attributes;
 using AutoMapper.Internal;
 using MailKit.Net.Smtp;
@@ -11,7 +11,7 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-namespace Infrastructure
+namespace Infrastructure.Services
 {
     [RegisterClassAsScoped]
     public class MailService : IMailService

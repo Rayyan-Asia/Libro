@@ -23,16 +23,18 @@ namespace Presentation.Controllers
         private readonly ModifyRoleCommandValidator _modifyRoleValidator;
         private readonly RegisterCommandValidator _registerValidator;
         private readonly ViewProfileQueryValidator _viewProfileValidator;
+        private readonly IJwtService _jwtService;
 
         public UsersController(IMediator mediator, LoginQueryValidator loginValidator,
             ModifyRoleCommandValidator modifyRoleValidator, RegisterCommandValidator registerValidator, 
-            ViewProfileQueryValidator viewPorfileValidator)
+            ViewProfileQueryValidator viewPorfileValidator, IJwtService jwtService)
         {
             _mediator = mediator;
             _loginValidator = loginValidator;
             _modifyRoleValidator = modifyRoleValidator;
             _registerValidator = registerValidator;
             _viewProfileValidator = viewPorfileValidator;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -79,7 +81,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -127,7 +129,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {

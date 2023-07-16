@@ -5,8 +5,11 @@ using Application;
 using Application.DTOs;
 using Application.Entities.ReadingLists.Commands;
 using Application.Entities.ReadingLists.Queries;
+using Application.Services;
 using Domain;
 using FluentValidation.Results;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +30,7 @@ namespace Tests.Controllers
         private readonly RemoveBookFromReadingListCommandValidator _removeBookFromReadingListValidator;
         private readonly RemoveReadingListCommandValidator _removeReadingListValidator;
         private readonly ReadingListsController _controller;
+        private readonly IJwtService _jwtService;
 
         public ReadingListsControllerTests()
         {
@@ -37,6 +41,7 @@ namespace Tests.Controllers
             _editReadingListValidator = new EditReadingListCommandValidator();
             _removeBookFromReadingListValidator = new RemoveBookFromReadingListCommandValidator();
             _removeReadingListValidator = new RemoveReadingListCommandValidator();
+            _jwtService = new JwtService();
 
             _controller = new ReadingListsController(
                 _mediatorMock.Object,
@@ -45,7 +50,8 @@ namespace Tests.Controllers
                 _browseReadingListQueryValidator,
                 _editReadingListValidator,
                 _removeBookFromReadingListValidator,
-                _removeReadingListValidator
+                _removeReadingListValidator,
+                _jwtService 
             );
             var httpContext = new DefaultHttpContext();
             _controller.ControllerContext = new ControllerContext()

@@ -18,10 +18,12 @@ namespace Presentation.Controllers
     {
         private readonly IMediator _mediator;
         private readonly GetRecommendationQueryValidator _validator;
-        public RecommendationsController(IMediator mediator)
+        private readonly IJwtService _jwtService;
+        public RecommendationsController(IMediator mediator,GetRecommendationQueryValidator validator ,IJwtService jwtService)
         {
             _mediator = mediator;
-            _validator = new GetRecommendationQueryValidator();
+            _validator = validator;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -35,7 +37,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {

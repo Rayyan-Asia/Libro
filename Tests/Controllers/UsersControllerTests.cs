@@ -1,6 +1,9 @@
 ﻿using Application.Entities.Profiles.Queries;
 using Application.Entities.Users.Commands;
 using Application.Entities.Users.Queries;
+using Application.Services;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +21,8 @@ namespace Tests.Controllers
         private readonly ModifyRoleCommandValidator _modifyRoleValidator;
         private readonly RegisterCommandValidator _registerValidator;
         private readonly ViewProfileQueryValidator _viewProfileValidator;
-
         private readonly UsersController _controller;
+        private readonly IJwtService _jwtService;
 
         public UsersControllerTests()
         {
@@ -28,13 +31,15 @@ namespace Tests.Controllers
             _modifyRoleValidator = new ModifyRoleCommandValidator();
             _registerValidator = new RegisterCommandValidator();
             _viewProfileValidator = new ViewProfileQueryValidator();
+            _jwtService = new JwtService();
 
             _controller = new UsersController(
                 _mediatorMock.Object,
                 _loginValidator,
                 _modifyRoleValidator,
                 _registerValidator,
-                _viewProfileValidator
+                _viewProfileValidator,
+                _jwtService
             );
         }
 

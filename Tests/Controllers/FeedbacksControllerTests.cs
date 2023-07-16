@@ -4,7 +4,10 @@ using Application;
 using Application.DTOs;
 using Application.Entities.Feedbacks.Commands;
 using Application.Entities.Feedbacks.Queries;
+using Application.Services;
 using FluentValidation.Results;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +27,7 @@ namespace Tests.Controllers
         private readonly EditFeedbackCommandValidator _editFeedbackValidator;
         private readonly RemoveFeedbackCommandValidator _removeFeedbackValidator;
         private readonly FeedbacksController _controller;
+        private readonly IJwtService _jwtService;
 
         public FeedbacksControllerTests()
         {
@@ -33,6 +37,7 @@ namespace Tests.Controllers
             _browseUserFeedbackValidator = new BrowseUserFeedbackQueryValidator();
             _editFeedbackValidator = new EditFeedbackCommandValidator();
             _removeFeedbackValidator = new RemoveFeedbackCommandValidator();
+            _jwtService = new JwtService();
             
             _controller = new FeedbacksController(
                 _mediatorMock.Object,
@@ -40,7 +45,8 @@ namespace Tests.Controllers
                 _addFeedbackValidator,
                 _browseUserFeedbackValidator,
                 _editFeedbackValidator,
-                _removeFeedbackValidator
+                _removeFeedbackValidator,
+                _jwtService
             );
             var httpContext = new DefaultHttpContext();
             _controller.ControllerContext = new ControllerContext()

@@ -1,6 +1,8 @@
 ﻿using Application;
+using Application.Services;
 using Domain;
 using Infrastructure;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Libro.Infrastructure
@@ -8,10 +10,12 @@ namespace Libro.Infrastructure
     public class ModelManager
     {
         private readonly ModelBuilder _modelBuilder;
+        private readonly IPasswordHasher _passwordHasher;
 
         public ModelManager(ModelBuilder modelBuilder)
         {
             _modelBuilder = modelBuilder;
+            _passwordHasher = new PasswordHasher();
         }
 
 
@@ -225,8 +229,8 @@ namespace Libro.Infrastructure
             for (int i = 0; i < users.Count; i++)
             {
                 var user = users[i];
-                string salt = PasswordHasher.GenerateSalt();
-                var hashedPassword = PasswordHasher.ComputeHash(passwords[i], salt);
+                string salt = _passwordHasher.GenerateSalt();
+                var hashedPassword = _passwordHasher.ComputeHash(passwords[i], salt);
                 user.HashedPassword = hashedPassword;
                 user.Salt = salt;
             }

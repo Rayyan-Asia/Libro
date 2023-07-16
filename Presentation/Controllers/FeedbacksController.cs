@@ -24,10 +24,11 @@ namespace Presentation.Controllers
         private readonly BrowseUserFeedbackQueryValidator _browseUserFeedbackValidator;
         private readonly EditFeedbackCommandValidator _editFeedbackValidator;
         private readonly RemoveFeedbackCommandValidator _removeFeedbackValidator;
+        private readonly IJwtService _jwtService;
 
         public FeedbacksController(IMediator mediator, BrowseBookFeedbackQueryValidator browseBookFeedbackValidator, 
             AddFeedbackCommandValidator addFeedbackValidator, BrowseUserFeedbackQueryValidator browseUserFeedbackValidator, 
-            EditFeedbackCommandValidator editFeedbackValidator, RemoveFeedbackCommandValidator removeFeedbackValidator)
+            EditFeedbackCommandValidator editFeedbackValidator, RemoveFeedbackCommandValidator removeFeedbackValidator, IJwtService jwtService)
         {
             _mediator = mediator;
             _browseBookFeedbackValidator = browseBookFeedbackValidator;
@@ -35,6 +36,7 @@ namespace Presentation.Controllers
             _browseUserFeedbackValidator = browseUserFeedbackValidator;
             _editFeedbackValidator = editFeedbackValidator;
             _removeFeedbackValidator = removeFeedbackValidator;
+            _jwtService = jwtService;
         }
 
         [HttpGet("book")]
@@ -82,7 +84,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -109,7 +111,7 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    var user = _jwtService.GetUserFromPayload(token);
                     if (editFeedbackCommand == null) return BadRequest();
                     editFeedbackCommand.UserId = user.Id;
                     ValidationResult validationResult = _editFeedbackValidator.Validate(editFeedbackCommand);
@@ -134,7 +136,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {

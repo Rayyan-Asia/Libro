@@ -21,13 +21,19 @@ namespace Application.Entities.Users.Handlers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ILogger<RegisterCommandHandler> _logger;
+        private readonly IJwtService _jwtService;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public RegisterCommandHandler(IUserRepository userRepository, IMapper mapper, IConfiguration configuration, ILogger<RegisterCommandHandler> logger)
+        public RegisterCommandHandler(IUserRepository userRepository, IMapper mapper,
+            IConfiguration configuration, ILogger<RegisterCommandHandler> logger,
+            IJwtService jwtService, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _logger = logger;
+            _jwtService = jwtService;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<IActionResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -41,14 +47,14 @@ namespace Application.Entities.Users.Handlers
             }
 
             var newUser = new User { Email = request.Email, PhoneNumber = request.PhoneNumber, Name = request.Name };
-            newUser.Salt = PasswordHasher.GenerateSalt();
-            newUser.HashedPassword = PasswordHasher.ComputeHash(request.Password, newUser.Salt);
+            newUser.Salt = _passwordHasher.GenerateSalt();
+            newUser.HashedPassword = _passwordHasher.ComputeHash(request.Password, newUser.Salt);
 
             _logger.LogInformation($"Adding User");
             var registeredUser = await _userRepository.AddUserAsync(newUser);
 
             var registeredUserDto = _mapper.Map<UserDto>(registeredUser);
-            var jwt = JwtService.GenerateJwt(registeredUser, _configuration);
+            var jwt = _jwtService.GenerateJwt(registeredUser, _configuration);
 
             return new OkObjectResult(new AuthenticationResponse() { Jwt = jwt, UserDto = registeredUserDto });
         }

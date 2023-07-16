@@ -17,17 +17,18 @@ namespace Presentation.Controllers
     [Route("api/[controller]")]
     public class ReservationsController : Controller
     {
-
         private readonly IMediator _mediator;
         private readonly ReserveBookCommandValidator _reserveBookCommandValidator;
         private readonly ApproveReservationCommandValidator _approveReservationValidator;
+        private readonly IJwtService _jwtService;
 
         public ReservationsController(IMediator mediator, ReserveBookCommandValidator reserveBookCommandValidator,
-            ApproveReservationCommandValidator approveReservationValidator)
+            ApproveReservationCommandValidator approveReservationValidator, IJwtService jwtService)
         {
             _mediator = mediator;
             _reserveBookCommandValidator = reserveBookCommandValidator;
             _approveReservationValidator = approveReservationValidator;
+            _jwtService = jwtService;
         }
 
         [HttpPost("reserve/{bookId}")]
@@ -42,7 +43,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {

@@ -24,11 +24,12 @@ namespace Presentation.Controllers
         private readonly EditReadingListCommandValidator _editReadingListValidator;
         private readonly RemoveBookFromReadingListCommandValidator _removeBookFromReadingListValidator;
         private readonly RemoveReadingListCommandValidator _removeReadingListValidator;
+        private readonly IJwtService _jwtService;
 
         public ReadingListsController(IMediator mediator, AddBookToReadingListCommandValidator addBookToReadingListValidator,
             AddReadingListCommandValidator addReadingListValidator, BrowseReadingListsQueryValidator browseReadingListQueryValidator,
             EditReadingListCommandValidator editReadingListValidator, RemoveBookFromReadingListCommandValidator removeBookFromReadingListValidator,
-            RemoveReadingListCommandValidator removeReadingListValidator)
+            RemoveReadingListCommandValidator removeReadingListValidator, IJwtService jwtService)
         {
             _mediator = mediator;
             _addBookToReadingListValidator = addBookToReadingListValidator;
@@ -37,6 +38,7 @@ namespace Presentation.Controllers
             _editReadingListValidator = editReadingListValidator;
             _removeBookFromReadingListValidator = removeBookFromReadingListValidator;
             _removeReadingListValidator = removeReadingListValidator;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -50,7 +52,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -85,7 +87,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -114,7 +116,7 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    var user = _jwtService.GetUserFromPayload(token);
                     if (editReadingListCommand == null) return BadRequest();
                     editReadingListCommand.UserId = user.Id;
                     ValidationResult validationResult = _editReadingListValidator.Validate(editReadingListCommand);
@@ -141,7 +143,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -171,7 +173,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }
                     catch (Exception ex)
                     {
@@ -197,7 +199,7 @@ namespace Presentation.Controllers
                 if (authorizationHeader.Count > 0)
                 {
                     var token = authorizationHeader[0]?.Split(" ")[1]; // Extract the JWT token
-                    var user = JwtService.GetUserFromPayload(token);
+                    var user = _jwtService.GetUserFromPayload(token);
                     removeBookFromReadingList.UserId = user.Id;
                     ValidationResult validationResult = _removeBookFromReadingListValidator.Validate(removeBookFromReadingList);
                     if (!validationResult.IsValid)

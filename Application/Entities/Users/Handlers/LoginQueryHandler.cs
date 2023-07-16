@@ -16,15 +16,21 @@ namespace Application.Entities.Users.Handlers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ILogger<LoginQueryHandler> _logger;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IJwtService _jwtService;
 
-        public LoginQueryHandler(IUserRepository userRepository, IMapper mapper, IConfiguration configuration, ILogger<LoginQueryHandler> logger)
-
+        public LoginQueryHandler(IUserRepository userRepository, IMapper mapper,
+            IConfiguration configuration, ILogger<LoginQueryHandler> logger,
+            IPasswordHasher passwordHasher, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _logger = logger;
+            _passwordHasher = passwordHasher;
+            _jwtService = jwtService;
         }
+
         public async Task<IActionResult> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Retrieving user by email {request.Email}");
@@ -34,8 +40,8 @@ namespace Application.Entities.Users.Handlers
                 _logger.LogError($"User NOT FOUND with email {request.Email}");
                 return new NotFoundObjectResult("User not found with email " + request.Email);
             }
-            var isVerified = PasswordHasher.VerifyPassword(request.Password, user.Salt, user.HashedPassword);
-            var jwt = JwtService.GenerateJwt(user, _configuration);
+            var isVerified = _passwordHasher.VerifyPassword(request.Password, user.Salt, user.HashedPassword);
+            var jwt = _jwtService.GenerateJwt(user, _configuration);
 
             if (isVerified)
             {

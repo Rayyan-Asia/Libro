@@ -1,16 +1,19 @@
-﻿using System.Data;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Services;
+using AutoDependencyRegistration.Attributes;
 using Domain;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Services
+namespace Infrastructure.Services
 {
-    public static class JwtService
+
+    [RegisterClassAsScoped]
+    public class JwtService : IJwtService
     {
-        public static User GetUserFromPayload(string jwtToken)
+        public User GetUserFromPayload(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = tokenHandler.ReadJwtToken(jwtToken);
@@ -36,7 +39,7 @@ namespace Application.Services
             return null;
         }
 
-        public static string GenerateJwt(User user, IConfiguration configuration)
+        public string GenerateJwt(User user, IConfiguration configuration)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:SecretForKey"]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

@@ -2,8 +2,11 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Entities.Recommendations.Query;
+using Application.Services;
 using Domain;
 using FluentValidation.Results;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +22,14 @@ namespace Tests.Controllers
         private readonly Mock<IMediator> _mediatorMock;
         private readonly GetRecommendationQueryValidator _validator;
         private readonly RecommendationsController _controller;
+        private readonly IJwtService _jwtService;
 
         public RecommendationsControllerTests()
         {
             _mediatorMock = new Mock<IMediator>();
             _validator = new GetRecommendationQueryValidator();
-
-            _controller = new RecommendationsController(_mediatorMock.Object);
+            _jwtService = new JwtService();
+            _controller = new RecommendationsController(_mediatorMock.Object,_validator, _jwtService);
             var httpContext = new DefaultHttpContext();
             _controller.ControllerContext = new ControllerContext()
             {

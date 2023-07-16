@@ -20,12 +20,15 @@ namespace Presentation.Controllers
         private readonly IMediator _mediator;
         private readonly ApproveBookReturnCommandValidator _approveValidator;
         private readonly BookReturnCommandValidator _bookReturnValidator;
+        private readonly IJwtService _jwtService;
 
-        public ReturnsController(IMediator mediator, ApproveBookReturnCommandValidator approveValidator, BookReturnCommandValidator bookReturnValidator)
+        public ReturnsController(IMediator mediator, ApproveBookReturnCommandValidator approveValidator,
+            BookReturnCommandValidator bookReturnValidator, IJwtService jwtService)
         {
             _mediator = mediator;
             _approveValidator = approveValidator;
             _bookReturnValidator = bookReturnValidator;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -54,7 +57,7 @@ namespace Presentation.Controllers
                     User user;
                     try
                     {
-                        user = JwtService.GetUserFromPayload(token);
+                        user = _jwtService.GetUserFromPayload(token);
                     }catch (Exception ex)
                     {
                         return Unauthorized();

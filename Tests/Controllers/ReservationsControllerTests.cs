@@ -5,8 +5,11 @@ using Application;
 using Application.DTOs;
 using Application.Entities.Reservations.Commnads;
 using Application.Entities.Reservations.Queries;
+using Application.Services;
 using Domain;
 using FluentValidation.Results;
+using Infrastructure;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +26,19 @@ namespace Tests.Controllers
         private readonly ReserveBookCommandValidator _reserveBookCommandValidator;
         private readonly ApproveReservationCommandValidator _approveReservationCommandValidator;
         private readonly ReservationsController _controller;
+        private readonly IJwtService _jwtService;
 
         public ReservationsControllerTests()
         {
             _mediatorMock = new Mock<IMediator>();
             _reserveBookCommandValidator = new ReserveBookCommandValidator();
             _approveReservationCommandValidator = new ApproveReservationCommandValidator();
+            _jwtService = new JwtService();
             _controller = new ReservationsController(
                 _mediatorMock.Object,
                 _reserveBookCommandValidator,
-                _approveReservationCommandValidator
+                _approveReservationCommandValidator,
+                _jwtService
             );
         }
 
